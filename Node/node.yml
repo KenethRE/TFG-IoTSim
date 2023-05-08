@@ -1,0 +1,22 @@
+---
+version: "3.4"
+services:
+  nodejs:
+    image: node:latest
+    container_name: AzureDigTwinNode
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      external:
+          ipv4_address: 172.0.0.2
+
+networks:
+  external:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/24
+          gateway: 172.25.0.2
