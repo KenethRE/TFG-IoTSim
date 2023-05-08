@@ -4,4 +4,4 @@ az acr task create \
     --image helloworld:{{.Run.ID}} \
     --context https://github.com/KenethRE/TFG-IoTSim.git#build \
     --file Dockerfile \
-    --git-access-token $GIT_PAT
+    --git-access-token $GIT_TOKEN \
