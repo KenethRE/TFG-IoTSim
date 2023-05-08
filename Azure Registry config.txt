@@ -1,3 +1,5 @@
+# This command creates tasks for the registry tfg2023
+
 az acr task create \
     --registry tfg2023 \
     --name buildMain \
