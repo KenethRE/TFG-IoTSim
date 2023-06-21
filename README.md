@@ -28,7 +28,7 @@ A blueprint for getting a React web app with a Node.js API and a MongoDB databas
 
 Let's jump in and get this up and running in Azure. When you are finished, you will have a fully functional web app deployed to the cloud. In later steps, you'll see how to setup a pipeline and monitor the application.
 
-!["Screenshot of deployed ToDo app"](assets/web.png)
+!["Screenshot of deployed ToDo app1"](assets/web.png)
 
 <sup>Screenshot of the deployed ToDo app</sup>
 
