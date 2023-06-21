@@ -32,6 +32,6 @@
     "postCreateCommand": "",
     "remoteUser": "node",
     "hostRequirements": {
-        "memory": "8gb"
+        "memory": "4gb"
     }
 }
