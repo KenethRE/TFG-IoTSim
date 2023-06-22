@@ -5,6 +5,7 @@ import yaml from "yamljs";
 import { getConfig } from "./config";
 import lists from "./routes/lists";
 import items from "./routes/items";
+import iot from "./routes/iot";
 import { configureMongoose } from "./models/mongoose";
 import { observability } from "./config/observability";
 
@@ -57,9 +58,7 @@ export const createApp = async (): Promise<Express> => {
     // API Routes
     app.use("/lists/:listId/items", items);
     app.use("/lists", lists);
-    app.use("/iot", (req, res) => {
-        res.send("Hello from IoT");
-    });
+    app.use("/iot", iot);
     // Swagger UI
     const swaggerDocument = yaml.load("./openapi.yaml");
     app.use("/", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
