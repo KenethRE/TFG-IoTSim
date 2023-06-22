@@ -57,7 +57,9 @@ export const createApp = async (): Promise<Express> => {
     // API Routes
     app.use("/lists/:listId/items", items);
     app.use("/lists", lists);
-
+    app.use("/iot", (req, res) => {
+        res.send("Hello from IoT");
+    });
     // Swagger UI
     const swaggerDocument = yaml.load("./openapi.yaml");
     app.use("/", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
