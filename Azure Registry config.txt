@@ -1,9 +1,0 @@
-# This command creates tasks for the registry tfg2023
-
-az acr task create \
-    --registry tfg2023 \
-    --name buildMain \
-    --image helloworld:{{.Run.ID}} \
-    --context https://github.com/KenethRE/TFG-IoTSim.git#build \
-    --file Dockerfile \
-    --git-access-token $GIT_TOKEN \
