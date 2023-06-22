@@ -22,7 +22,8 @@
                 "ms-azuretools.vscode-docker",
                 "ms-vscode.js-debug",
                 "ms-vscode.vscode-node-azure-pack",
-                "github.copilot"
+                "github.copilot",
+                "ms-playwright.playwright"
             ]
         }
     },
