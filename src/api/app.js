@@ -1,11 +1,11 @@
 import express, { json, urlencoded } from 'express'
-import logger from './components/log.js'
-import authenticate from './components/authentication.js'
-import appRouter from './routes/app-router.js'
-import { errorMiddleware } from './components/error-handler.js'
-import { setStore } from './components/async-local-storage.js'
-import { metrics } from './components/metrics.js'
-import { PORT } from './config.js'
+import logger from './src/components/log.js'
+import authenticate from './src/components/authentication.js'
+import appRouter from './src/routes/app-router.js'
+import { errorMiddleware } from './src/components/error-handler.js'
+import { setStore } from './src/components/async-local-storage.js'
+import { metrics } from './src/components/metrics.js'
+import { PORT } from './src/config.js'
 
 const app = express()
 //express helpers

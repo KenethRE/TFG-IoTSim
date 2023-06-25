@@ -2,7 +2,8 @@
   "name": "todo-node-js-express-mongo",
   "version": "0.1.0",
   "description": "IoT DigTwins REST API",
-  "main": "dist/index.js",
+  "main": "app.js",
+  "type:": "module",
   "scripts": {
     "start": "node .",
     "test": "jest --coverage"
