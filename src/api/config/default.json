@@ -1,7 +1,7 @@
 {
     "database": {
         "connectionString": "",
-        "databaseName": "Todo"
+        "databaseName": "adt-tfg"
     },
     "observability": {
         "connectionString": "",
