@@ -1,30 +1,18 @@
 {
-  "name": "todo-node-ts-express-mongo",
+  "name": "todo-node-js-express-mongo",
   "version": "0.1.0",
-  "description": "Express Todo REST API",
-  "main": "dist/index.js",
+  "description": "IoT DigTwins REST API",
+  "main": "app.js",
+  "type:": "module",
   "scripts": {
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
-    "prebuild": "npm run lint",
-    "build": "tsc -b .",
-    "prestart": "npm run build",
     "start": "node .",
     "test": "jest --coverage"
   },
-  "author": "",
+  "author": "Keneth Launies Rodriguez Escorcia",
   "license": "MIT",
-  "jest": {
-    "testEnvironment": "node",
-    "coveragePathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "testMatch": [
-      "<rootDir>/**/*.spec.ts"
-    ]
-  },
   "dependencies": {
     "@azure/keyvault-secrets": "^4.7.0",
+    "@azure/digital-twins": "^1.0.0-preview.1",
     "config": "^3.3.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",

@@ -4,14 +4,26 @@ param tags object = {}
 
 param collections array = [
   {
-    name: 'TodoList'
-    id: 'TodoList'
+    name: 'Environments'
+    id: 'EnvironmentItem'
     shardKey: 'Hash'
     indexKey: '_id'
   }
   {
-    name: 'TodoItem'
-    id: 'TodoItem'
+    name: 'Rooms'
+    id: 'RoomItem'
+    shardKey: 'Hash'
+    indexKey: '_id'
+  }
+  {
+    name: 'Objects'
+    id: 'ObjectItem'
+    shardKey: 'Hash'
+    indexKey: '_id'
+  }
+  {
+    name: 'Users'
+    id: 'UserItem'
     shardKey: 'Hash'
     indexKey: '_id'
   }
@@ -20,7 +32,7 @@ param databaseName string = ''
 param keyVaultName string
 
 // Because databaseName is optional in main.bicep, we make sure the database name is set here.
-var defaultDatabaseName = 'Todo'
+var defaultDatabaseName = 'adt-tfg'
 var actualDatabaseName = !empty(databaseName) ? databaseName : defaultDatabaseName
 
 module cosmos '../core/database/cosmos/mongo/cosmos-mongo-db.bicep' = {

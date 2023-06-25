@@ -156,10 +156,10 @@ module apimApi './app/apim-api.bicep' = if (useAPIM) {
   scope: rg
   params: {
     name: useAPIM ? apim.outputs.apimServiceName : ''
-    apiName: 'todo-api'
-    apiDisplayName: 'Simple Todo API'
-    apiDescription: 'This is a simple Todo API'
-    apiPath: 'todo'
+    apiName: 'adt-tfg-api'
+    apiDisplayName: 'Azure Digital Twins API'
+    apiDescription: 'This API is a proof of concept to use Azure Digital Twins and apply it to home use.'
+    apiPath: 'adt-tfg'
     webFrontendUrl: web.outputs.SERVICE_WEB_URI
     apiBackendUrl: api.outputs.SERVICE_API_URI
   }
