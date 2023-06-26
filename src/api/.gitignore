@@ -1,3 +1,5 @@
+
+config/metaconfig.json
 # Logs
 logs
 *.log
