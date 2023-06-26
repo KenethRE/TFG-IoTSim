@@ -1,9 +1,12 @@
 module.exports = {
     'env': {
         'node': true,
-        'es2021': true
+        'es2021': true,
     },
-    'extends': 'eslint:recommended',
+    'extends': [
+        'eslint:recommended',
+        "plugin:@typescript-eslint/recommended"
+    ],
     'overrides': [
     ],
     'parserOptions': {
