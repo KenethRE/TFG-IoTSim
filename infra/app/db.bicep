@@ -5,25 +5,25 @@ param tags object = {}
 param collections array = [
   {
     name: 'Environments'
-    id: 'EnvironmentItem'
+    id: 'Environments'
     shardKey: 'Hash'
     indexKey: '_id'
   }
   {
     name: 'Rooms'
-    id: 'RoomItem'
+    id: 'Rooms'
     shardKey: 'Hash'
     indexKey: '_id'
   }
   {
     name: 'Objects'
-    id: 'ObjectItem'
+    id: 'Objects'
     shardKey: 'Hash'
     indexKey: '_id'
   }
   {
     name: 'Users'
-    id: 'UserItem'
+    id: 'Users'
     shardKey: 'Hash'
     indexKey: '_id'
   }
