@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: SimulIoT
-version: "0.0.2"
+version: "0.0.3"
 slug: simuliot
 description: This add-on allows you to simulate IoT devices.
 url: "https://github.com/KenethRE/TFG-IoTSim"
