@@ -2,6 +2,11 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
+# Install requirements for add-on
+RUN \
+  apk add --no-cache \
+    python3
+
 # Execute during the build of the image
 ARG TEMPIO_VERSION BUILD_ARCH
 RUN \
@@ -10,3 +15,6 @@ RUN \
 
 # Copy root filesystem
 COPY rootfs /
+RUN chmod a+x /run.sh
+
+CMD [ "/run.sh" ]

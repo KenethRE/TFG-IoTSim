@@ -7,3 +7,7 @@
 ## 0.0.2
 
 - Updated execution location to test AppArmor config
+
+## 0.0.3
+
+- Removed AppArmor config. Removed unnecessary files. Added python3-dev to build dependencies.
