@@ -18,4 +18,4 @@ options:
   message: "Hello world..."
 schema:
   message: "str?"
-#image: "ghcr.io/home-assistant/{arch}-simuliot:{version}"
+image: "ghcr.io/KenethRE/{arch}-simuliot:{version}"
