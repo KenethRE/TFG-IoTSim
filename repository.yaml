@@ -1,0 +1,4 @@
+# https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
+name: TFG-IOT
+url: 'https://github.com/KenethRE/TFG-IoTSim'
+maintainer: Keneth Rodriguez <kenethlaunies.rodriguez@alu.uclm.es>
