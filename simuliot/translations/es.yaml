@@ -1,0 +1,4 @@
+configuration:
+  message:
+    name: Mensaje
+    description: El mensaje que aparecerá cuando se arranque este add-on.
