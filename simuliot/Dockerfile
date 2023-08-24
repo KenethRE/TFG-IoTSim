@@ -6,7 +6,7 @@ FROM $BUILD_FROM
 RUN \
   apk add --no-cache \
     python3 \
-    sqlite3
+    sqlite
 
 # Execute during the build of the image
 ARG TEMPIO_VERSION BUILD_ARCH
