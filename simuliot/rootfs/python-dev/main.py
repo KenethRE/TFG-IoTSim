@@ -8,7 +8,7 @@ def hello():
 
 def main():
     temperature = temp.tempDevice()
-    number = temperature.tempProbe()
+    number = temperature.contactProbe()
     print ("The temperature is: " + str(number))
 
 if __name__ == "__main__":
