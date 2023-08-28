@@ -52,8 +52,6 @@ def main():
         cur = conn.cursor()
         cur.execute("SELECT * FROM DEVICES")
         rows = cur.fetchall()
-        for row in rows:
-            print(row)
     temperature = temp.tempDevice()
     reading1 = temperature.contactProbe()
     print ("Contact Probe Reading: " + str(reading1))
