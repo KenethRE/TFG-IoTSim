@@ -11,3 +11,7 @@
 ## 0.0.3
 
 - Removed AppArmor config. Removed unnecessary files. Added python3-dev to build dependencies.
+
+## 0.0.4
+
+- Added thermometer device.
