@@ -4,11 +4,11 @@
 	<meta charset="UTF-8">
 	<title>Main Page SimulIoT</title>
 	<div class = "w3-container" style="position: absolute; top: 0%; left: 16px;">
-		<h1 class="center" style="display: block; margin-left: auto; width: 50%; height: auto;">SimulIoT</h1>
+		<h1 class="center" style="display: block; margin-left: auto; width: 50%; height: auto; font-weight: bolder;">SimulIoT</h1>
 	</div>
 	{% load static %}
-	<div class = "w3-container" style=" position: absolute; top: 8%; left: 100px;">
-		<img src="{% static 'starthere/img/simuliot.png' %}" alt="SimulIoT" class="center" style="display: block; width: 100px; height: 100px;">
+	<div class = "w3-container" style=" position: absolute; top: 70px; left: 80px;">
+		<img src="{% static 'starthere/img/simuliot.png' %}" alt="SimulIoT" class="center" style="display: block; width: 100px; height: 100px; margin-left: 30px;">
 	</div>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +20,7 @@
 </head>
 
 <body>
-	<div class = "w3-container" style="position: absolute; top: 20%; left: 16px;">
+	<div class = "w3-container" style="position: relative; top: 200px; left: 50px;">
 		<form method = "post" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{ form.as_p }}
