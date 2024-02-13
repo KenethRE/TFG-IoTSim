@@ -1,31 +1,37 @@
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .forms import HotelForm
-from .models import Hotel
-
+from .forms import PlanoUpload
+from .models import Plano
+import os
 # Create your views here.
 
+def start(request):
+	return render(request, 'start.html')
 
-def hotel_image_view(request):
-
+def upload_plano(request):
 	if request.method == 'POST':
-		form = HotelForm(request.POST, request.FILES)
+		form = PlanoUpload(request.POST, request.FILES)
 
 		if form.is_valid():
 			form.save()
-			return redirect('success')
+			return redirect('display_plano')
 	else:
-		form = HotelForm()
-	return render(request, 'start.html', {'form': form})
+		planos = Plano.objects.all()
+		for plano in planos:
+			plano.delete()
+			if os.path.exists(plano.Subir_Plano.path):
+				os.remove(plano.Subir_Plano.path)
+		form = PlanoUpload()
+	return render(request, 'upload_plano.html', {'form': form})
 
 
 def success(request):
 	return HttpResponse('successfully uploaded')
 
-def display_hotel_images(request):
+def display_plano(request):
  
     if request.method == 'GET':
- 
-        # getting all the objects of hotel.
-        Hotels = Hotel.objects.all()
-        return render(request, 'display_images.html', {'hotel_images': Hotels})
+        # getting all the objects of planos.
+        LastPlano = Plano.objects.last()
+        return render(request, 'display_images.html', {'plano': LastPlano})

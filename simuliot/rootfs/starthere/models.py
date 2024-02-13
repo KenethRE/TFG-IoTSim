@@ -1,9 +1,9 @@
 from django.db import models
 
 # Create your models here.
-class Hotel(models.Model):
-    name = models.CharField(max_length=50)
-    hotel_Main_Img = models.ImageField(upload_to='images/')
+class Plano(models.Model):
+    Nombre_Imagen = models.CharField(max_length=50)
+    Subir_Plano = models.ImageField(upload_to='images/')
     
     class Meta:
         app_label = 'starthere'

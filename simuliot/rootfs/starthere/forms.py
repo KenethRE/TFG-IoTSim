@@ -1,10 +1,9 @@
 # forms.py
 from django import forms
-from .models import Hotel
+from .models import Plano
 
 
-class HotelForm(forms.ModelForm):
-
+class PlanoUpload(forms.ModelForm):
 	class Meta:
-		model = Hotel
-		fields = ['name', 'hotel_Main_Img']
+		model = Plano
+		fields = ['Nombre_Imagen', 'Subir_Plano']

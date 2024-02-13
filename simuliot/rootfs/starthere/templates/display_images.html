@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Hotel Images</title>
+	<title>Plano</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -12,13 +12,15 @@
 	</script>
 </head>
 <body>
-
-	{% for hotel in hotel_images %}
-			<div class="col-md-4">
-					{{ hotel.name }}
-					<img src="{{ hotel.hotel_Main_Img.url }}" class="img-responsive" style="width: 100%; float: left; margin-right: 10px;" />
-			</div>
-	{% endfor %}
+	<div class="w3-container">
+		<h1 style="display: block; margin-left: auto; margin-inline: auto; width: 50%; height: auto;">Vista del Plano</h1>
+	</div>
+	<div class="center">
+				<img src="{{ plano.Subir_Plano.url }}" class="img-responsive" style="display: block; margin-left: auto; margin-right: auto; width: 50%; height: auto;" />
+	</div>
+    <div class="top">
+		<a href="{% url 'start' %}" class="btn btn-primary" role="button">Volver</a>
+	</div>
 
 </body>
 </html>
