@@ -12,7 +12,6 @@ def start(request):
 def upload_plano(request):
 	if request.method == 'POST':
 		form = PlanoUpload(request.POST, request.FILES)
-
 		if form.is_valid():
 			form.save()
 			return redirect('display_plano')
@@ -30,8 +29,10 @@ def success(request):
 	return HttpResponse('successfully uploaded')
 
 def display_plano(request):
- 
-    if request.method == 'GET':
-        # getting all the objects of planos.
-        LastPlano = Plano.objects.last()
-        return render(request, 'display_images.html', {'plano': LastPlano})
+	if request.method == 'GET':
+		# getting all the objects of planos.
+		LastPlano = Plano.objects.last()
+		if LastPlano is not None:
+			return render(request, 'display_images.html', {'plano': LastPlano})
+		else:
+			return render(request, 'error_no_maps_available.html', status=404)

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Please try again</title>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+	</script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #ff0000;
+        }
+        p {
+            color: #333333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Error: No session was found.</h1>
+    <p>Please click below to go back to the main menu and select <span style="font-weight:bold;"> "Get Started". </span></p>
+
+    <div class="buttons">
+        <a href="{% url 'start' %}" class="btn btn-primary" role="button">Main Menu</a>
+    </div>
+
+</body>
+</html>

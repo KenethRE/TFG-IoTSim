@@ -1,9 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+	.grid-container {
+		display: grid;
+		grid-template-columns: auto auto;
+		padding: 10px;
+	}
+	.grid-item {
+		padding: 20px;
+		text-align: center;
+	}
+	.sidebar {
+		height: 100%;
+		width: 200px;
+		position: fixed;
+		z-index: 1;
+		top: 0;
+		left: 0;
+		background-color: #151c41;
+		overflow-x: hidden;
+		padding-top: 20px;
+	}
+	.sidebar a {
+		padding: 6px 8px 6px 16px;
+		text-decoration: none;
+		font-size: 25px;
+		color: #ffffff;
+		display: block;
+	}
+	.sidebar a:hover {
+		color: #474747;
+	}
+	.main {
+		margin-left: 160px;
+		padding: 0px 50px;
+	}
+	@media screen and (max-height: 450px) {
+		.sidebar {padding-top: 15px;}
+		.sidebar a {font-size: 18px;}
+	}
+	@media screen and (max-width: 700px) {
+		.sidebar {
+			width: 100%;
+			height: fit-content;
+			position: relative;
+		}
+		.sidebar a {float: left;}
+		.main {margin-left: 0;}
+	}
+	@media screen and (max-width: 400px) {
+		.sidebar a {
+			text-align: center;
+			float: none;
+		}
+	}
+	a {
+		text-decoration: none;
+		font-size: 10px;
+	}
+</style>
 <head>
 	<meta charset="UTF-8">
 	<title>Plano</title>
-
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
@@ -12,15 +70,29 @@
 	</script>
 </head>
 <body>
-	<div class="w3-container">
-		<h1 style="display: block; margin-left: auto; margin-inline: auto; width: 50%; height: auto;">Vista del Plano</h1>
+	<div class="grid-container">
+		<div class="grid-item">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-3">
+						<div class="sidebar">
+							<p style="color: #ffffff; font-size: large;">Dispositivos</h1>
+							
+							<ul class="nav nav-pills nav-stacked">
+								<li><a href="#" style="font-size: small;">Menu Item 1</a></li>
+								<li><a href="#">Menu Item 2</a></li>
+								<li><a href="#">Menu Item 3</a></li>
+								<li><a href="{% url 'start' %}" class="btn btn-primary" role="button">Volver</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-sm-9">
+						<h1 style="font-weight: bolder; margin-left: 10px;">Plano</h1>
+						<img src="{{ plano.Subir_Plano.url }}" class="img-responsive" />
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div class="center">
-				<img src="{{ plano.Subir_Plano.url }}" class="img-responsive" style="display: block; margin-left: auto; margin-right: auto; width: 50%; height: auto;" />
-	</div>
-    <div class="top">
-		<a href="{% url 'start' %}" class="btn btn-primary" role="button">Volver</a>
-	</div>
-
 </body>
 </html>

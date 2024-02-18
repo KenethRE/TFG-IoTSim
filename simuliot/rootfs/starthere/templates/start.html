@@ -1,5 +1,41 @@
 <!DOCTYPE html>
 <html>
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto;
+        padding: 10px;
+    }
+    .grid-item {
+        padding: 20px;
+        text-align: center;
+    }
+    .buttons {
+        display: inline-block;
+        margin-right: 20px;
+        margin-top: 10px;
+    }
+    @media screen and (max-height: 450px) {
+		.sidebar {padding-top: 15px;}
+		.sidebar a {font-size: 18px;}
+	}
+	@media screen and (max-width: 700px) {
+		.sidebar {
+			width: 100%;
+			height: fit-content;
+			position: relative;
+		}
+		.sidebar a {float: left;}
+		.main {margin-left: 0;}
+	}
+	@media screen and (max-width: 400px) {
+		.sidebar a {
+			text-align: center;
+			float: none;
+		}
+	}
+</style>
 <head>
     <title>Bienvenido a SimulIoT</title>
     <meta charset="UTF-8">
@@ -11,15 +47,37 @@
 	</script>
 </head>
 <body>
-    <h1 style="font-weight: bolder; margin-left: 10px;">Bienvenido a SimulIot</h1>
-    {% load static %}
-    <img src="{% static 'starthere/img/simuliot.png' %}" alt="SimulIoT" class="center" style="display: block; width: 100px; height: 100px; margin-left: 150px;">
-    <p style="margin-left: 10px;">Esta es la página principal de SimulIoT. Seleccione una de las opciones a continuación para continuar.</p>
-    <p style="margin-left: 10px;">Si desea subir un plano y comenzar a colocar dispositivos, seleccione la opción <span style="font-weight:bold;">"Empezar de cero".</span></p>
-    <p style="margin-left: 10px;">Si desea ver el plano que subió anteriormente, seleccione la opción <span style="font-weight:bold;">"Ver plano anterior".</span></p>
-    <div class="buttons" style="display: inline-block; margin-right: 20px; margin-top: 10px;">
-		<a href="{% url 'upload_plano' %}" class="btn btn-primary" role="button" style="margin-left: 50px;">Empezar de cero</a>
-        <a href="{% url 'display_plano' %}" class="btn btn-primary" role="button" style="margin-left: 50px;">Ver plano anterior</a>
+    <div class="grid-container">
+        <div class="grid-item">
+            <div class="row">
+                <div class="col-md-12 justify-content-center">
+                    <h1 style="font-weight: bolder; margin-left: 10px;">Welcome to Simul-IoT</h1>
+                </div>
+            </div>
+            <div class="column">
+                <div class="col-md-12 align-items-left">
+                    {% load static %}
+                    <img src="{% static 'starthere/img/simuliot.png' %}" alt="SimulIoT" class="center" style="width: 100px; height: 100px;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Simul-IoT Landing Page</p>
+                    <p>To get started please select <span style="font-weight:bold;">"Get Started".</span></p>
+                    <p>To continue working from a previous session, click <span style="font-weight:bold;">"Continue Session".</span></p>
+                </div>
+            <div class="row">
+                <div class="col">
+                    <div class="buttons">
+                        <a href="{% url 'upload_plano' %}" class="btn btn-primary" role="button">Get Started</a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="buttons">
+                        <a href="{% url 'display_plano' %}" class="btn btn-primary" role="button">Continue Session</a>
+                    </div>
+                </div>
+            </div>
     </div>
 </body>
 </html>
