@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <style>
     .grid-container {
         display: grid;
@@ -45,6 +44,17 @@
 	</script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
 	</script>
+    <script>
+        function getStarted() {
+        let accepted = confirm("This will delete your previous session. Are you sure you want to continue?");
+        if (accepted) {
+            //send user to get started page
+            window.location.href = "{% url 'upload_map' %}";       
+        } else {
+            window.stop();
+        }
+}
+    </script>
 </head>
 <body>
     <div class="grid-container">
@@ -68,7 +78,7 @@
             <div class="row">
                 <div class="col">
                     <div class="buttons">
-                        <a href="{% url 'upload_map' %}" class="btn btn-primary" role="button">Get Started</a>
+                        <button onclick="getStarted()" class="btn btn-primary" role="button" id="getStartedBtn">Get Started</button>
                     </div>
                 </div>
                 <div class="col">

@@ -19,10 +19,13 @@ def upload_plano(request):
 			return redirect('display_map')
 	else:
 		planos = Plano.objects.all()
+		devices = Devices.objects.all()
 		for plano in planos:
 			plano.delete()
 			if os.path.exists(plano.Upload_Map.path):
 				os.remove(plano.Upload_Map.path)
+		for device in devices:
+			device.delete()
 		form = MapUpload()
 	return render(request, 'upload_map.html', {'form': form})
 

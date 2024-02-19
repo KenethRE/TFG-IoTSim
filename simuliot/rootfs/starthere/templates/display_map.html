@@ -100,7 +100,7 @@
 	.card .card-header {
 		background-color: transparent;
 		border-bottom: none;
-		padding: 25px 20px;
+		padding: 5px 10px;
 	}
 
 	.card .card-header+.card-block, .card .card-header+.card-block-big {
@@ -113,7 +113,7 @@
 	}
 
 	.m-b-20 {
-		margin-bottom: 20px;
+		margin-bottom: 10px;
 	}
 
 	.card-sub {
@@ -124,7 +124,7 @@
 	}
 
 	.card-block {
-		padding: 1.25rem;
+		padding: 5px;
 		background-color: #fff;
 	}
 </style>
@@ -145,7 +145,6 @@
 			$("#sortable").disableSelection();
 		});
 	</script>
-
 </head>
 <body>
 	<div class="row container d-flex justify-content-center">
@@ -162,9 +161,9 @@
 								<div class="col-md-6 m-b-20" draggable="false">
 									<div class="card-sub">
 										<div class="card-block">
-											<span class="material-symbols-outlined" style="font-size: 50px;">thermometer</span>
-											<h4 class="card-title">{{ device.Type }}</h4>
-											<p class="card-text">{{ device.Description }}</p>
+											<span class="material-symbols-outlined" style="font-size: 20px;">thermometer</span>
+											<h4 class="card-title" style="font-size: 10px;">{{ device.Type }}</h4>
+											<p class="card-text" style="font-size: 5px;">{{ device.Description }}</p>
 										</div>
 									</div>
 								</div>
@@ -176,6 +175,9 @@
 				<div class="col-md-9">
 					<h1 style="font-weight: bolder; margin-left: 10px;">map</h1>
 					<img src="{{ map.Upload_Map.url }}" class="img-responsive"/>
+				</div>
+				<div class="col-md-9">
+					<a href="{% url 'start' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px;">Return to Menu</a>
 				</div>
 			</div>
 		</div>
