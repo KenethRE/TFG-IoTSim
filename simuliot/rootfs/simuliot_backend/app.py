@@ -5,58 +5,59 @@ app = Flask(__name__)
 #Execute DB connection
 conn = simuliot.connect_db()
 
-books = []
+devices = []
 
 if conn is not None:
     cur = conn.cursor()
     cur.execute("SELECT * FROM DEVICES")
     rows = cur.fetchall()
     for row in rows:
-        book = {
+        device = {
             "id": row[0],
-            "title": row[1],
-            "author": row[2]
+            "name": row[1],
+            "type": row[2],
+            "manufacturer": row[3]
         }
-        books.append(book)
+        devices.append(device)
 
 # Routes
-# GET /books
-@app.route('/books', methods=['GET'])
-def get_books():
-    return jsonify(books)
+# GET /devices
+@app.route('/devices', methods=['GET'])
+def get_devices():
+    return jsonify(devices)
 
-# GET /books/<id>
-@app.route('/books/<int:book_id>', methods=['GET'])
+# GET /devices/<id>
+@app.route('/devices/<int:book_id>', methods=['GET'])
 def get_book(book_id):
-    book = next((book for book in books if book['id'] == book_id), None)
+    book = next((book for book in devices if book['id'] == book_id), None)
     if book:
         return jsonify(book)
     else:
         return jsonify({"error": "Book not found"}), 404
 
-# POST /books
-@app.route('/books', methods=['POST'])
+# POST /devices
+@app.route('/devices', methods=['POST'])
 def add_book():
     new_book = request.get_json()
-    books.append(new_book)
+    devices.append(new_book)
     return jsonify(new_book), 201
 
-# PUT /books/<id>
-@app.route('/books/<int:book_id>', methods=['PUT'])
+# PUT /devices/<id>
+@app.route('/devices/<int:book_id>', methods=['PUT'])
 def update_book(book_id):
-    book = next((book for book in books if book['id'] == book_id), None)
+    book = next((book for book in devices if book['id'] == book_id), None)
     if book:
         book.update(request.get_json())
         return jsonify(book)
     else:
         return jsonify({"error": "Book not found"}), 404
 
-# DELETE /books/<id>
-@app.route('/books/<int:book_id>', methods=['DELETE'])
+# DELETE /devices/<id>
+@app.route('/devices/<int:book_id>', methods=['DELETE'])
 def delete_book(book_id):
-    book = next((book for book in books if book['id'] == book_id), None)
+    book = next((book for book in devices if book['id'] == book_id), None)
     if book:
-        books.remove(book)
+        devices.remove(book)
         return jsonify({"message": "Book deleted"})
     else:
         return jsonify({"error": "Invalid request"})

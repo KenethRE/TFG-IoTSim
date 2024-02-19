@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .forms import PlanoUpload
-from .models import Plano
+from .forms import MapUpload
+from .models import Plano, Devices
 import os
+import json
+import urllib.request
 # Create your views here.
 
 def start(request):
@@ -11,28 +13,39 @@ def start(request):
 
 def upload_plano(request):
 	if request.method == 'POST':
-		form = PlanoUpload(request.POST, request.FILES)
+		form = MapUpload(request.POST, request.FILES)
 		if form.is_valid():
 			form.save()
-			return redirect('display_plano')
+			return redirect('display_map')
 	else:
 		planos = Plano.objects.all()
 		for plano in planos:
 			plano.delete()
-			if os.path.exists(plano.Subir_Plano.path):
-				os.remove(plano.Subir_Plano.path)
-		form = PlanoUpload()
-	return render(request, 'upload_plano.html', {'form': form})
+			if os.path.exists(plano.Upload_Map.path):
+				os.remove(plano.Upload_Map.path)
+		form = MapUpload()
+	return render(request, 'upload_map.html', {'form': form})
 
 
 def success(request):
 	return HttpResponse('successfully uploaded')
 
-def display_plano(request):
+def display_map(request):
 	if request.method == 'GET':
-		# getting all the objects of planos.
+		# We get the last Plano uploaded
 		LastPlano = Plano.objects.last()
+		devices = []
 		if LastPlano is not None:
-			return render(request, 'display_images.html', {'plano': LastPlano})
+			# We get all devices from backend
+			try:
+				devices_back = json.loads(urllib.request.urlopen('http://127.0.0.1:8088/devices').read())
+				for device in devices_back:
+					print (device)
+					devices.append(Devices.create(device['id'], device['name'], device['type'], device['manufacturer']))
+			except:
+				devices = []
+			return render(request, 'display_map.html',{'map': LastPlano})
 		else:
 			return render(request, 'error_no_maps_available.html', status=404)
+	else:
+		return HttpResponse(status=403)
