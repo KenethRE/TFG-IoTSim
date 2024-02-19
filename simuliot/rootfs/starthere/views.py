@@ -40,11 +40,13 @@ def display_map(request):
 			try:
 				devices_back = json.loads(urllib.request.urlopen('http://127.0.0.1:8088/devices').read())
 				for device in devices_back:
-					devices.append(Devices.objects.create_device(device['id'], device['name'], device['type'], device['manufacturer']))
+					new_device = Devices.objects.create_device(device['id'], device['type'], device['name'], device['manufacturer'])
+					devices.append(new_device)
+					new_device.save()
 			except Exception as e:
 				print(e)
 				devices = []
-			return render(request, 'display_map.html',{'map': LastPlano}, {'devices': devices})
+			return render(request, 'display_map.html', {'devices': devices, 'map': LastPlano})
 		else:
 			return render(request, 'error_no_maps_available.html', status=404)
 	else:
