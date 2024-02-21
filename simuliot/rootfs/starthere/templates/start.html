@@ -72,20 +72,31 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <p>To get started please select <span style="font-weight:bold;">"Get Started".</span></p>
+                    {% if planos > 0 %}
+                    <p>To start over, please select <span style="font-weight:bold;">"Get Started".</span></p>
                     <p>To continue working from a previous session, click <span style="font-weight:bold;">"Continue Session".</span></p>
+                    {% else %}
+                    <p>To get started, please select <span style="font-weight:bold;">"Get Started".</span></p>
+                    {% endif %}
                 </div>
             <div class="row">
                 <div class="col">
                     <div class="buttons">
+                        {% if planos > 0 %}
                         <button onclick="getStarted()" class="btn btn-primary" role="button" id="getStartedBtn">Get Started</button>
+                        {% else %}
+                        <a href="{% url 'upload_map' %}" class="btn btn-primary" role="button">Get Started</a>
+                        {% endif %}
+                        
                     </div>
                 </div>
+                {% if planos > 0 %}
                 <div class="col">
                     <div class="buttons">
                         <a href="{% url 'display_map' %}" class="btn btn-primary" role="button">Continue Session</a>
                     </div>
                 </div>
+                {% endif %}
             </div>
     </div>
 </body>

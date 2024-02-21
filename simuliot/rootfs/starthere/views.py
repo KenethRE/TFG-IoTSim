@@ -9,7 +9,8 @@ import urllib.request
 # Create your views here.
 
 def start(request):
-	return render(request, 'start.html')
+	planos = Plano.objects.count()
+	return render(request, 'start.html', {'planos': planos})
 
 def upload_plano(request):
 	if request.method == 'POST':
