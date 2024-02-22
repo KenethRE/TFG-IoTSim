@@ -2,28 +2,29 @@ from flask import Flask, jsonify, request
 import simuliot
 app = Flask(__name__)
 
-#Execute DB connection
-conn = simuliot.connect_db()
+# Routes
+# GET /devices
 
 devices = []
 
-if conn is not None:
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM DEVICES")
-    rows = cur.fetchall()
-    for row in rows:
-        device = {
-            "id": row[0],
-            "name": row[1],
-            "type": row[2],
-            "manufacturer": row[3]
-        }
-        devices.append(device)
-
-# Routes
-# GET /devices
 @app.route('/devices', methods=['GET'])
 def get_devices():
+    conn = simuliot.connect_db()
+    devices = []
+    if conn is not None:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM DEVICES")
+        rows = cur.fetchall()
+        for row in rows:
+            device = {
+                "id": row[0],
+                "name": row[1],
+                "type": row[2],
+                "manufacturer": row[3]
+            }
+            devices.append(device)
+    cur.close()
+    conn.close()
     return jsonify(devices)
 
 # GET /devices/<id>

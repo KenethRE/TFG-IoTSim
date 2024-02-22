@@ -26,7 +26,6 @@
 		text-decoration: none;
 		font-size: 25px;
 		color: #ffffff;
-		display: block;
 	}
 	.sidebar a:hover {
 		color: #474747;
@@ -72,19 +71,6 @@
 		-ms-flex: 1 1 auto;
 		flex: 1 1 auto
 	}
-
-	@media (max-width:991.98px) {
-		.padding {
-			padding: 1.5rem
-		}
-	}
-
-	@media (max-width:767.98px) {
-		.padding {
-			padding: 1rem
-		}
-	}
-
 	.padding {
 		padding: 3rem !important
 	}
@@ -94,7 +80,7 @@
 		-webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
 		box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
 		border: none;
-		margin-bottom: 30px;
+		margin-bottom: 10px;
 	}
 
 	.card .card-header {
@@ -131,7 +117,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Map</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1", shrink-to-fit="no">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -161,9 +147,8 @@
 								<div class="col-md-6 m-b-20" draggable="false">
 									<div class="card-sub">
 										<div class="card-block">
-											<span class="material-symbols-outlined" style="font-size: 20px;">thermometer</span>
-											<h4 class="card-title" style="font-size: 10px;">{{ device.Type }}</h4>
-											<p class="card-text" style="font-size: 5px;">{{ device.Description }}</p>
+											<span class="material-symbols-outlined" style="font-size: 20px;">{{ device.Type }}</span>
+											<h4 class="card-title text-wrap" style="font-size: 10px; padding: 5px;">{{ device.Description }}</h4>
 										</div>
 									</div>
 								</div>
@@ -175,9 +160,10 @@
 				<div class="col-md-9">
 					<h1 style="font-weight: bolder; margin-left: 10px;">map</h1>
 					<img src="{{ map.Upload_Map.url }}" class="img-responsive"/>
+					<div class="text-left" class="btn btn-primary">
+						<a href="{% url 'start' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Return to Menu</a>
+						<a href="Save" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; align-items: right;">Save</a>
 				</div>
-				<div class="col-md-9">
-					<a href="{% url 'start' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px;">Return to Menu</a>
 				</div>
 			</div>
 		</div>

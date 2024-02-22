@@ -8,16 +8,16 @@ class Plano(models.Model):
         app_label = 'starthere'
 
 class DeviceManager(models.Manager):
-    def mapTypeToIcon(Type):
+    def mapTypeToIcon(self, Type):
         match Type:
             case 'Thermometer':
-                return 'thermomether'
+                return 'thermometer'
             case 'Water_Flow':
                 return 'water'
             case 'Air_Flow':
                 return 'air'
             case 'US_Sensor':
-                return 'sensor'
+                return 'sensors'
             case 'Switch':
                 return 'switch'
             case 'Hub':
