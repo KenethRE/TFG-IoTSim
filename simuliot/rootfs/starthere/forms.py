@@ -7,3 +7,8 @@ class MapUpload(forms.ModelForm):
 	class Meta:
 		model = Plano
 		fields = ['Upload_Map']
+
+class UpdateDeviceValue(forms.ModelForm):
+	class Meta:
+		model = Plano
+		fields = ['Device_Value']

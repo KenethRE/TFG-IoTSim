@@ -40,6 +40,7 @@ class Devices(models.Model):
     Type = models.CharField(max_length=50)
     Description = models.CharField(max_length=50)
     Manufacturer = models.CharField(max_length=50)
+    Value = models.CharField(max_length=50, default='0')
 
     objects = DeviceManager()
 
