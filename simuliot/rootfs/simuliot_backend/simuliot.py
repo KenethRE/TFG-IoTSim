@@ -24,12 +24,12 @@ logger.info('Starting Simulated IoT Device')
 
 def connect_db():
     conn = None
-    if (os.path.isfile('./tfg-test.db')):
+    if (os.path.isfile('../tfg-test.db')):
         try:
-            conn = sqlite3.connect('./tfg-test.db')
+            conn = sqlite3.connect('../tfg-test.db')
             logger.info("Connected to SQLite DB")
         except sqlite3.Error as e:
-            logger.critical('Failure to open DB. Please reinstall addon: ' + e)
+            logger.critical('Failure to open DB. Please reinstall addon: ' + str(e))
     else: 
         logger.critical('Database file not found. Please reinstall addon.')
     return conn
@@ -52,7 +52,9 @@ def main():
         cur = conn.cursor()
         cur.execute("SELECT * FROM DEVICES")
         rows = cur.fetchall()
-    temperature = temp.tempDevice()
+        for row in rows:
+            print(row)
+    temperature = temp.tempDevice(rows[0][0], rows[0][1], rows[0][2], rows[0][3], rows[0][4], True)
     reading1 = temperature.contactProbe()
     print ("Contact Probe Reading: " + str(reading1))
     sleep(1)

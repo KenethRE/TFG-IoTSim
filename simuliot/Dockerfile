@@ -16,6 +16,8 @@ RUN \
 
 # Copy root filesystem
 COPY rootfs /
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+RUN python3 -m pip install --no-cache-dir -r /requirements.txt
 RUN chmod a+x /run.sh
 
 CMD [ "/run.sh" ]

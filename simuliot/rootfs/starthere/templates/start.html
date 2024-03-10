@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto;
+        padding: 10px;
+    }
+    .grid-item {
+        padding: 20px;
+        text-align: center;
+    }
+    .buttons {
+        display: inline-block;
+        margin-right: 20px;
+        margin-top: 10px;
+    }
+    @media screen and (max-height: 450px) {
+		.sidebar {padding-top: 15px;}
+		.sidebar a {font-size: 18px;}
+	}
+	@media screen and (max-width: 700px) {
+		.sidebar {
+			width: 100%;
+			height: fit-content;
+			position: relative;
+		}
+		.sidebar a {float: left;}
+		.main {margin-left: 0;}
+	}
+	@media screen and (max-width: 400px) {
+		.sidebar a {
+			text-align: center;
+			float: none;
+		}
+	}
+</style>
+<head>
+    <title>Bienvenido a SimulIoT</title>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+	</script>
+    <script>
+        function getStarted() {
+        let accepted = confirm("This will delete your previous session. Are you sure you want to continue?");
+        if (accepted) {
+            //send user to get started page
+            window.location.href = "{% url 'upload_map' %}";       
+        } else {
+            window.stop();
+        }
+}
+    </script>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="grid-item">
+            <div class="row">
+                <div class="col-md-12 justify-content-center">
+                    <h1 style="font-weight: bolder; margin-left: 10px;">Welcome to Simul-IoT</h1>
+                </div>
+            </div>
+            <div class="column">
+                <div class="col-md-12 align-items-left">
+                    {% load static %}
+                    <img src="{% static 'starthere/img/simuliot.png' %}" alt="SimulIoT" class="center" style="width: 100px; height: 100px;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {% if planos > 0 %}
+                    <p>To start over, please select <span style="font-weight:bold;">"Get Started".</span></p>
+                    <p>To continue working from a previous session, click <span style="font-weight:bold;">"Continue Session".</span></p>
+                    {% else %}
+                    <p>To get started, please select <span style="font-weight:bold;">"Get Started".</span></p>
+                    {% endif %}
+                </div>
+            <div class="row">
+                <div class="col">
+                    <div class="buttons">
+                        {% if planos > 0 %}
+                        <button onclick="getStarted()" class="btn btn-primary" role="button" id="getStartedBtn">Get Started</button>
+                        {% else %}
+                        <a href="{% url 'upload_map' %}" class="btn btn-primary" role="button">Get Started</a>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+                {% if planos > 0 %}
+                <div class="col">
+                    <div class="buttons">
+                        <a href="{% url 'display_map' %}" class="btn btn-primary" role="button">Continue Session</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+    </div>
+</body>
+</html>

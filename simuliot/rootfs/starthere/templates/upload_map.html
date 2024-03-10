@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+	.grid-container {
+		display: grid;
+		grid-template-columns: auto auto;
+		padding: 10px;
+	}
+	.grid-item {
+		padding: 20px;
+		text-align: center;
+	}
+	.buttons {
+		display: inline-block;
+		margin-right: 20px;
+		margin-top: 10px;
+	}
+	@media screen and (max-height: 450px) {
+		.sidebar {padding-top: 15px;}
+		.sidebar a {font-size: 18px;}
+	}
+	@media screen and (max-width: 700px) {
+		.sidebar {
+			width: 100%;
+			height: fit-content;
+			position: relative;
+		}
+		.sidebar a {float: left;}
+		.main {margin-left: 0;}
+	}
+	@media screen and (max-width: 400px) {
+		.sidebar a {
+			text-align: center;
+			float: none;
+		}
+	}
+</style>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Get Started</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+	</script>
+</head>
+
+<body>
+	<div class = "grid-container">
+		<div class="grid-item">
+			<div class="row">
+				<div class="col-md-12 justify-content-center">
+					<h1 style="font-weight: bolder; margin-left: 10px;">Get Started</h1>
+				</div>
+				<div class="col-md-12">
+					{% load static %}
+					<img src="{% static 'starthere/img/simuliot.png' %}" alt="SimulIoT" class="center" style="width: 100px; height: 100px;">
+				</div>
+			</div>
+			<div class="row" style="padding: 10px;">
+				<div class="col-md-12 justify-content-center">
+					<form method = "post" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{ form.as_p }}
+						<button type="submit" class="btn btn-primary">Upload</button>
+						<a href="{% url 'start' %}" class="btn btn-primary" role="button">Return to Menu</a>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
