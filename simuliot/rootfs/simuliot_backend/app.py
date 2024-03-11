@@ -13,6 +13,7 @@ sock = SocketIO(app, debug=True, cors_allowed_origins="*", async_mode='eventlet'
 devices = []
 devicesCurrentSession = []
 device_thread = Thread(target = simuliot.start_session, args = (devicesCurrentSession,))
+
 conn = simuliot.connect_db()
 try:
     if conn is not None:
@@ -145,10 +146,9 @@ def kill_session():
 ## Start a websocket server to send MQTT to front
 @sock.on('device_event')
 def handle_device_event():
-    # We obtain the data from MQTT
-    
-    simuliot.logger.debug('Sent data in websocket: ' + str(data))
-    emit('device_event', data, broadcast=True)
+    # We start sending the currentDeviceSession data to the front whether or not there is a change in the session
+    simuliot.logger.debug('Sending current session to front')
+    emit('device_event', jsonify(devicesCurrentSession), broadcast=True)
 
 if __name__ == "__main__":
     app.run('127.0.0.1', 8088, debug=True)

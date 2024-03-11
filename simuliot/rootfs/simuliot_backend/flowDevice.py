@@ -5,11 +5,12 @@ import uuid
 # For non contact sensors (ie. sensors that use infrared or metal devices) the temperature range is -20 to 60 degrees Celsius.
 
 class flowDevice:
-    def __init__(self, deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer, kind):
+    def __init__(self, deviceID, deviceName, client, kind):
         self.deviceID = deviceID
         self.deviceName = deviceName
         self.UUID = str(uuid.uuid4())
         self.kind = kind
+        self.client = client
 
     def airFlow(self):
         return round(uniform(0, 11), 2)
@@ -30,5 +31,5 @@ class flowDevice:
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": self.createValue()
         }
-    def publish(self, client):
-        client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
+    def publish(self):
+        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])

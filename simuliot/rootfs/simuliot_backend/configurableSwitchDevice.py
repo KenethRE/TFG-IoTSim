@@ -5,12 +5,13 @@ import uuid
 # For non contact sensors (ie. sensors that use infrared or metal devices) the temperature range is -20 to 60 degrees Celsius.
 
 class configurableSwitchDevice:
-    def __init__(self, deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer, config):
+    def __init__(self, deviceID, deviceName, config, client):
         self.deviceID = deviceID
         self.deviceName = deviceName
         self.UUID = str(uuid.uuid4())
         self.config = config
         self.switchState = False
+        self.client = client
 
     def reading(self):
         return {
@@ -21,5 +22,5 @@ class configurableSwitchDevice:
         self.switchState = not self.switchState
         return self.switchState
     
-    def publish(self, client):
-        client.publish("homeassistant/sensor/" + self.UUID + "/switch", self.switchState)
+    def publish(self):
+        self.client.publish("homeassistant/sensor/" + self.UUID + "/switch", self.switchState)

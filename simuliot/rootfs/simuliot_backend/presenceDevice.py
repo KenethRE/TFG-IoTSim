@@ -5,13 +5,11 @@ import uuid
 # For non contact sensors (ie. sensors that use infrared or metal devices) the temperature range is -20 to 60 degrees Celsius.
 
 class presenceDevice:
-    def __init__(self, deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer):
+    def __init__(self, deviceID, deviceName, client):
         self.deviceID = deviceID
         self.deviceName = deviceName
-        self.deviceClass = deviceClass
-        self.deviceModel = deviceModel
-        self.deviceManufacturer = deviceManufacturer
         self.UUID = str(uuid.uuid4())
+        self.client = client
 
     def presence(self):
         return round(randint(0, 1))
@@ -21,5 +19,5 @@ class presenceDevice:
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": self.presence()
         }
-    def publish(self, client):
-        client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
+    def publish(self):
+        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])

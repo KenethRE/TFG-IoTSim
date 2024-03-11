@@ -5,10 +5,11 @@ import uuid
 # For non contact sensors (ie. sensors that use infrared or metal devices) the temperature range is -20 to 60 degrees Celsius.
 
 class soundSensorDevice:
-    def __init__(self, deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer):
+    def __init__(self, deviceID, deviceName, client):
         self.deviceID = deviceID
         self.deviceName = deviceName
         self.UUID = str(uuid.uuid4())
+        self.client = client
 
     def contactProbe(self):
         return round(uniform(-273.15, 300), 2)
@@ -21,5 +22,5 @@ class soundSensorDevice:
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": self.contactProbe() if self.isContactProbe else self.nonContactProbe()
         }
-    def publish(self, client):
-        client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
+    def publish(self):
+        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
