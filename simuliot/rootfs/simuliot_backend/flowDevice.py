@@ -8,9 +8,6 @@ class flowDevice:
     def __init__(self, deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer, kind):
         self.deviceID = deviceID
         self.deviceName = deviceName
-        self.deviceClass = deviceClass
-        self.deviceModel = deviceModel
-        self.deviceManufacturer = deviceManufacturer
         self.UUID = str(uuid.uuid4())
         self.kind = kind
 
@@ -33,3 +30,5 @@ class flowDevice:
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": self.createValue()
         }
+    def publish(self, client):
+        client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])

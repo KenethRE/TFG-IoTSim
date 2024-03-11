@@ -7,13 +7,18 @@ class switchDevice:
     def __init__(self, deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer):
         self.deviceID = deviceID
         self.deviceName = deviceName
-        self.deviceClass = deviceClass
-        self.deviceModel = deviceModel
-        self.deviceManufacturer = deviceManufacturer
         self.UUID = str(uuid.uuid4())
+        self.switchState = False
 
     def reading(self):
         return {
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
-            "value": False
+            "value": self.switchState
         }
+    
+    def switch(self):
+        self.switchState = not self.switchState
+        return self.switchState
+    
+    def publish(self, client):
+        client.publish("homeassistant/sensor/" + self.UUID + "/switch", self.switchState)

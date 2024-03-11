@@ -8,9 +8,6 @@ class tempDevice:
     def __init__(self, deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer):
         self.deviceID = deviceID
         self.deviceName = deviceName
-        self.deviceClass = deviceClass
-        self.deviceModel = deviceModel
-        self.deviceManufacturer = deviceManufacturer
         self.UUID = str(uuid.uuid4())
         self.switchState = False
     
@@ -22,3 +19,10 @@ class tempDevice:
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": self.nonContactProbe() + self.switchState
         }
+    def switch(self):
+        self.switchState = not self.switchState
+        return self.switchState
+    
+    def publish(self, client):
+        client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
+        client.publish("homeassistant/sensor/" + self.UUID + "/switch", self.switchState)

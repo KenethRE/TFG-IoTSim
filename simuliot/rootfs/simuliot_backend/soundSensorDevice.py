@@ -8,9 +8,6 @@ class soundSensorDevice:
     def __init__(self, deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer):
         self.deviceID = deviceID
         self.deviceName = deviceName
-        self.deviceClass = deviceClass
-        self.deviceModel = deviceModel
-        self.deviceManufacturer = deviceManufacturer
         self.UUID = str(uuid.uuid4())
 
     def contactProbe(self):
@@ -24,3 +21,5 @@ class soundSensorDevice:
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": self.contactProbe() if self.isContactProbe else self.nonContactProbe()
         }
+    def publish(self, client):
+        client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])

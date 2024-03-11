@@ -31,6 +31,7 @@ except Exception as e:
 
 @app.route('/all-devices', methods=['GET'])
 def get_all_devices():
+    simuliot.logger.info('Request to get all devices')
     return jsonify(devices)
 
 @app.route('/devices', methods=['GET'])
@@ -40,10 +41,11 @@ def get_devices():
 # GET /devices/<id>/reading
 @app.route('/devices/<int:device_id>', methods=['GET'])
 def get_device(device_id):
-    device = next((device for device in devices if device['UUID'] == device_id), None)
+    device = next((device for device in devicesCurrentSession if device['id'] == device_id), None)
     if device:
         return jsonify(device)
     else:
+        simuliot.logger.error('Device not found. id: ' + str(device_id))
         return jsonify({"error": "Device not found"}), 404
 
 # POST /devices

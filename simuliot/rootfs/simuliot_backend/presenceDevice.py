@@ -21,3 +21,5 @@ class presenceDevice:
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": self.presence()
         }
+    def publish(self, client):
+        client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
