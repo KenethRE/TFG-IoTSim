@@ -37,29 +37,15 @@ def connect_db():
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            print("Connected to MQTT Broker!")
+            logger.info("Connected to MQTT Broker!")
         else:
-            print("Failed to connect, return code %d\n", rc)
+            logger.critical("Failed to connect, return code %d\n", rc)
 
     client = mqtt.Client()
     client.on_connect = on_connect
     client.connect("localhost", 1883)
     return client
 
-def main():
-    conn = connect_db()
-    if conn is not None:
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM DEVICES")
-        rows = cur.fetchall()
-        for row in rows:
-            print(row)
-    temperature = temp.tempDevice(rows[0][0], rows[0][1], rows[0][2], rows[0][3], rows[0][4], True)
-    reading1 = temperature.contactProbe()
-    print ("Contact Probe Reading: " + str(reading1))
-    sleep(1)
-    reading2 = temperature.nonContactProbe()
-    print ("Non Contact Probe Reading: " + str(reading2))
-
-if __name__ == "__main__":
-    main()
+def getTempDevice(deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer, isContactProbe):
+    tempDevice = temp.tempDevice(deviceID, deviceName, deviceClass, deviceModel, deviceManufacturer, isContactProbe)
+    return tempDevice
