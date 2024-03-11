@@ -1,14 +1,18 @@
 from flask import Flask, jsonify, request
+from flask_socketio import SocketIO, emit
+from threading import Thread
+from signal import pthread_kill, SIGINT
+
 import simuliot
 app = Flask(__name__)
+sock = SocketIO(app, debug=True, cors_allowed_origins="*", async_mode='eventlet')
 
 # Routes
 # GET /devices
 
 devices = []
-
 devicesCurrentSession = []
-
+device_thread = Thread(target = simuliot.start_session, args = (devicesCurrentSession,))
 conn = simuliot.connect_db()
 try:
     if conn is not None:
@@ -125,6 +129,26 @@ def delete_device(device_id):
         return jsonify({"message": "Device removed from current session"}), 200
     else:
         return jsonify({"error": "Invalid request"}), 404
+
+
+@app.route('/start-session', methods=['GET'])
+def start_session():
+    device_thread.start()
+    device_thread.join()
+    return "Session has been started", 200
+
+@app.route('/kill-session',  methods=['GET'])
+def kill_session():
+    pthread_kill(device_thread.ident, SIGINT)
+    return "Session has been killed", 200
+
+## Start a websocket server to send MQTT to front
+@sock.on('device_event')
+def handle_device_event():
+    # We obtain the data from MQTT
+    
+    simuliot.logger.debug('Sent data in websocket: ' + str(data))
+    emit('device_event', data, broadcast=True)
 
 if __name__ == "__main__":
     app.run('127.0.0.1', 8088, debug=True)
