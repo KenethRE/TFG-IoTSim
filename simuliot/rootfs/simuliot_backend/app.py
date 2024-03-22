@@ -5,14 +5,13 @@ from signal import pthread_kill, SIGINT
 
 import simuliot
 app = Flask(__name__)
-sock = SocketIO(app, debug=True, cors_allowed_origins="*", async_mode='eventlet')
 
 # Routes
 # GET /devices
 
 devices = []
 devicesCurrentSession = []
-device_thread = Thread(target = simuliot.start_session, args = (devicesCurrentSession,))
+device_thread = Thread(target = simuliot.start, args = (devicesCurrentSession,))
 
 conn = simuliot.connect_db()
 try:
@@ -56,8 +55,16 @@ def get_device(device_id):
 # POST /devices
 @app.route('/devices', methods=['POST'])
 def add_device():
-    new_device = request.get_json()
-    devicesCurrentSession.append(new_device)
+    new_devices = request.get_json()
+    for device in new_devices:
+        new_device = {
+            "id": device['id'],
+            "name": device['name'],
+            "type": device['type'],
+            "location": device['location'],
+            "value": device['value']
+        }
+        devicesCurrentSession.append(device)
     return jsonify(new_device), 201
 
 @app.route('/store-session', methods=['GET'])
@@ -142,13 +149,6 @@ def start_session():
 def kill_session():
     pthread_kill(device_thread.ident, SIGINT)
     return "Session has been killed", 200
-
-## Start a websocket server to send MQTT to front
-@sock.on('device_event')
-def handle_device_event():
-    # We start sending the currentDeviceSession data to the front whether or not there is a change in the session
-    simuliot.logger.debug('Sending current session to front')
-    emit('device_event', jsonify(devicesCurrentSession), broadcast=True)
 
 if __name__ == "__main__":
     app.run('127.0.0.1', 8088, debug=True)

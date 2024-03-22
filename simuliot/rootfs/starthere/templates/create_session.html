@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+	.grid-container {
+		display: grid;
+		grid-template-columns: auto auto;
+		padding: 10px;
+	}
+	.grid-item {
+		padding: 20px;
+		text-align: center;
+	}
+	.sidebar {
+		height: 100%;
+		width: 200px;
+		position: fixed;
+		z-index: 1;
+		top: 0;
+		left: 0;
+		background-color: #151c41;
+		overflow-x: hidden;
+		padding-top: 20px;
+	}
+	.sidebar a {
+		padding: 6px 8px 6px 16px;
+		text-decoration: none;
+		font-size: 25px;
+		color: #ffffff;
+	}
+	.sidebar a:hover {
+		color: #474747;
+	}
+	.main {
+		margin-left: 160px;
+		padding: 0px 50px;
+	}
+	@media screen and (max-height: 450px) {
+		.sidebar {padding-top: 15px;}
+		.sidebar a {font-size: 18px;}
+	}
+	@media screen and (max-width: 700px) {
+		.sidebar {
+			width: 100%;
+			height: fit-content;
+			position: relative;
+		}
+		.sidebar a {float: left;}
+		.main {margin-left: 0;}
+	}
+	@media screen and (max-width: 400px) {
+		.sidebar a {
+			text-align: center;
+			float: none;
+		}
+	}
+	a {
+		text-decoration: none;
+		font-size: 10px;
+	}
+	.stretch-card>.card {
+    width: 100%;
+    min-width: 100%
+	}
+
+	body {
+		background-color: #f9f9fa
+	}
+
+	.flex {
+		-webkit-box-flex: 1;
+		-ms-flex: 1 1 auto;
+		flex: 1 1 auto
+	}
+	.padding {
+		padding: 3rem !important
+	}
+
+	.card {
+		border-radius: 5px;
+		-webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+		box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+		border: none;
+		margin-bottom: 10px;
+	}
+
+	.card .card-header {
+		background-color: transparent;
+		border-bottom: none;
+		padding: 5px 10px;
+	}
+
+	.card .card-header+.card-block, .card .card-header+.card-block-big {
+		padding-top: 0;
+	}
+
+	.card-block {
+		padding: 1.25rem;
+		background-color: #fff;
+	}
+
+	.m-b-20 {
+		margin-bottom: 10px;
+	}
+
+	.card-sub {
+		cursor: move;
+		border: none;
+		-webkit-box-shadow: 0 0 1px 2px rgba(0,0,0,0.05), 0 -2px 1px -2px rgba(0,0,0,0.04), 0 0 0 -1px rgba(0,0,0,0.05);
+		box-shadow: 0 0 1px 2px rgba(0,0,0,0.05), 0 -2px 1px -2px rgba(0,0,0,0.04), 0 0 0 -1px rgba(0,0,0,0.05);
+	}
+
+	.card-block {
+		padding: 5px;
+		background-color: #ffffff;
+	}
+    .card-title {
+        font-size: 10px;
+        padding: 5px;
+    }
+</style>
+<script>
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+    function dropClone(ev) {
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data).cloneNode(true));
+    }
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+    }
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+    function addCardBlock() {
+                if (document.getElementById("room_name").value == "" || document.getElementById("room_name").value == null || document.getElementById("room_name").value == undefined || document.getElementById("room_name").value == " "){
+                    document.getElementById("room_name").style.border = "1px solid red";
+                    return;
+                }
+                if (document.getElementById("rooms").children.length >= 6){
+                    alert("You can only have 6 rooms");
+                    return;
+                }
+                var newCardBlock = document.createElement("div");
+                newCardBlock.className = "col-md-6";
+
+                var card = document.createElement("div");
+                card.className = "card";
+
+                var cardHeader = document.createElement("div");
+                cardHeader.className = "card-header";
+
+                var cardTitle = document.createElement("h4");
+                cardTitle.className = "card-header-text";
+                cardTitle.style.fontWeight = "bolder";
+                cardTitle.textContent = document.getElementById("room_name").value;
+                document.getElementById("room_name").value = "";
+
+                var cardBlock = document.createElement("div");
+                cardBlock.className = "card-block";
+                cardBlock.ondragover = allowDrop;
+                cardBlock.ondrop = dropClone;
+                cardBlock.style.height = "200px";
+                cardBlock.style.overflow = "auto";
+                cardBlock.style.border = "1px solid #000";
+
+                cardHeader.appendChild(cardTitle);
+                newCardBlock.appendChild(cardHeader);
+                newCardBlock.appendChild(cardBlock);
+
+                document.getElementById("rooms").appendChild(newCardBlock);
+    }
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            addCardBlock();
+        }
+    });
+    // post all data from all rooms when clicking Save
+    function saveData() {
+        var rooms = document.getElementById("rooms").children;
+        var data = [];
+        for (var i = 0; i < rooms.length; i++){
+            var room = rooms[i];
+            var devices = room.children[1].children;
+            var deviceIDs = [];
+            for (var j = 0; j < devices.length; j++){
+                deviceIDs.push(devices[j].id);
+            }
+            data.push({location: room.children[0].children[0].textContent, devices: deviceIDs});
+        }
+        console.log(JSON.stringify(data));
+        $.ajax({
+            type: "POST",
+            url: "/create_session",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+            }
+        });
+    }
+</script>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Create a device session</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1", shrink-to-fit="no">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+<body>
+	<div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-header-text" style="font-weight: bolder;">Devices</h4>
+            </div>
+            <div class="card-block">
+                <div class="row" id="sortable">
+                    {% for device in devices %}
+                    <div class="col-md-6 m-b-20" draggable="true" ondragstart="drag(event)" id="{{ device.DeviceID }}">
+                        <div class="card-sub">
+                            <div class="card-block">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">{{ device.Type }}</span>
+                                <h4 class="card-title text-wrap" style="font-size: 10px; padding: 5px;">{{ device.Description }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Make 4 -->
+    <div class="col-md-9">
+        <h2 class="text-center">Create a device session</h2>
+        <input id="room_name" type="text" class="form-control" placeholder="Room Name" style="margin-bottom: 10px;">
+        <button onclick="addCardBlock()" class="btn btn-primary">Add Room</button>
+        <h3 class="text-center" style="font-weight: bolder;">Session</h4>
+        <div class="card" id="rooms"></div>
+    </div>
+    {% csrf_token %}
+    <button onclick="saveData()" class="btn btn-primary" style="margin-top: 20px;">Save</button>
+</body>
+</html>

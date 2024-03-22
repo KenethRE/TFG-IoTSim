@@ -1,4 +1,5 @@
 from django.db import models
+from django.core import serializers
 
 # Create your models here.
 class Plano(models.Model):
@@ -34,6 +35,9 @@ class DeviceManager(models.Manager):
     def create_device(self, DeviceID, Type, Description, Manufacturer):
         device = self.create(DeviceID=DeviceID, Type=self.mapTypeToIcon(Type), Description=Description, Manufacturer=Manufacturer)
         return device
+    def create_session_device(self, DeviceID, Type, Location):
+        device = self.create(DeviceID=DeviceID, Type=Type, Location=Location)
+        return device
 
 class Devices(models.Model):
     DeviceID = models.CharField(max_length=50)
@@ -41,8 +45,19 @@ class Devices(models.Model):
     Description = models.CharField(max_length=50)
     Manufacturer = models.CharField(max_length=50)
     Value = models.CharField(max_length=50, default='0')
-
+    Location = models.CharField(max_length=50, default='0')
     objects = DeviceManager()
+
+    def printDevice(self):
+        deviceString = {
+            "DeviceID": self.DeviceID,
+            "Type": self.Type,
+            "Description": self.Description,
+            "Manufacturer": self.Manufacturer,
+            "Value": self.Value,
+            "Location": self.Location
+        }
+        return deviceString
 
     class Meta:
         app_label = 'starthere'
