@@ -5,13 +5,14 @@ import uuid
 # For non contact sensors (ie. sensors that use infrared or metal devices) the temperature range is -20 to 60 degrees Celsius.
 
 class configurableSwitchDevice:
-    def __init__(self, deviceID, deviceName, location, config, client):
+    def __init__(self, deviceID, deviceName, location, config, type, client):
         self.deviceID = deviceID
         self.deviceName = deviceName
         self.location = location
         self.UUID = str(uuid.uuid4())
         self.config = config
         self.switchState = False
+        self.type = type
         self.client = client
 
     def reading(self):

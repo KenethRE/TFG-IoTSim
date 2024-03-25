@@ -4,10 +4,11 @@ import uuid
 # For non contact sensors (ie. sensors that use infrared or metal devices) the temperature range is -20 to 60 degrees Celsius.
 
 class hubDevice:
-    def __init__(self, deviceID, deviceName, location, client):
+    def __init__(self, deviceID, deviceName, location, type, client):
         self.deviceID = deviceID
         self.deviceName = deviceName
         self.location = location
+        self.type = type
         self.UUID = str(uuid.uuid4())
         self.client = client
 

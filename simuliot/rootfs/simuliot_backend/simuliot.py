@@ -73,13 +73,13 @@ def connect_mqtt():
 
 client = connect_mqtt()
 
-def getTempDevice(deviceID, deviceName, location, isContactProbe):
-    tempDevice = temp.tempDevice(deviceID, deviceName, location, isContactProbe, client)
+def getTempDevice(deviceID, deviceName, location, type, isContactProbe):
+    tempDevice = temp.tempDevice(deviceID, deviceName, location, type, isContactProbe, client)
     return tempDevice
 
-def getSwitchConfigurableDevice(deviceID, deviceName, location):
+def getSwitchConfigurableDevice(deviceID, deviceName, location, type):
     ## All configs will be empty for now
-    switchConfigurableDevice = switch_config.configurableSwitchDevice(deviceID, deviceName, location, None, client)
+    switchConfigurableDevice = switch_config.configurableSwitchDevice(deviceID, deviceName, location, None, type, client)
     return switchConfigurableDevice
 
 def getSwitchDevice(deviceID, deviceName, location):
