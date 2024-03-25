@@ -116,7 +116,7 @@
 </style>
 <head>
 	<meta charset="UTF-8">
-	<title>Map</title>
+	<title>Current Session</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1", shrink-to-fit="no">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -132,16 +132,18 @@
 				<div class="col-md-3">
 					<div class="card">
 						<div class="card-header">
-							<h4 class="card-header-text" style="font-weight: bolder;">Devices</h4>
+							<h4 class="card-header-text" style="font-weight: bolder;">Current Session</h4>
 						</div>
 						<div class="card-block">
 							<div class="row" id="sortable">
 								{% for device in devices %}
-								<div class="col-md-6 m-b-20" draggable="false">
+								<div class="col-md-6 m-b-20" draggable="false" id="{{ device.DeviceID }}">
 									<div class="card-sub">
 										<div class="card-block">
 											<span class="material-symbols-outlined" style="font-size: 20px;">{{ device.Type }}</span>
-											<h4 class="card-title text-wrap" style="font-size: 10px; padding: 5px;">{{ device.Description }}</h4>
+											<h4 class="card-title text-wrap" style="font-size: 10px; padding: 5px;">{{ device.Name }}</h4>
+											<h4 class="card-text text-wrap" style="font-size: 10px; padding: 5px;">{{ device.Location }}</h4>
+											<h4 class="card-text text-wrap" style="font-size: 10px; padding: 5px;">{{ device.Value }}</h4>
 										</div>
 									</div>
 								</div>
@@ -152,10 +154,9 @@
 				</div>
 				<div class="col-md-9">
 					<h1 style="font-weight: bolder; margin-left: 10px;">map</h1>
-					<img src="{{ map.Upload_Map.url }}" class="img-responsive"/>
 					<div class="text-left" class="btn btn-primary">
 						<a href="{% url 'start' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Return to Menu</a>
-						<a href="Save" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; align-items: right;">Save</a>
+						<a href="{% url 'terminate_session' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Terminate Session</a>
 				</div>
 				</div>
 			</div>

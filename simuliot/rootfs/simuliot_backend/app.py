@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_socketio import SocketIO, emit
 from threading import Thread
 from signal import pthread_kill, SIGINT
+import json
 
 import simuliot
 app = Flask(__name__)
@@ -45,9 +46,9 @@ def get_devices():
 # GET /devices/<id>/reading
 @app.route('/devices/<int:device_id>', methods=['GET'])
 def get_device(device_id):
-    device = next((device for device in devicesCurrentSession if device['id'] == device_id), None)
+    device = next((device for device in devicesCurrentSession if device.deviceID == device_id), None)
     if device:
-        return jsonify(device)
+        return json.dumps(device.__dict__)
     else:
         simuliot.logger.error('Device not found. id: ' + str(device_id))
         return jsonify({"error": "Device not found"}), 404
@@ -56,16 +57,47 @@ def get_device(device_id):
 @app.route('/devices', methods=['POST'])
 def add_device():
     new_devices = request.get_json()
-    for device in new_devices:
-        new_device = {
-            "id": device['id'],
-            "name": device['name'],
-            "type": device['type'],
-            "location": device['location'],
-            "value": device['value']
-        }
-        devicesCurrentSession.append(device)
-    return jsonify(new_device), 201
+    ## check if devicesCurrentSession is empty. If it is, then add the devices to the list
+    if len(devicesCurrentSession) == 0:
+        for device in new_devices:
+            if device['Type'] == 'Thermometer':
+                new_device = simuliot.getTempDevice(device['DeviceID'], device['Name'], device['Location'], True)
+                devicesCurrentSession.append(device)
+            elif device['Type'] == 'Switch_Config':
+                new_device = simuliot.getSwitchConfigurableDevice(device['DeviceID'], device['Name'], device['Location'])
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'Switch':
+                new_device = simuliot.getSwitchDevice(device['DeviceID'], device['Name'], device['Location'])
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'Water_Flow':
+                new_device = simuliot.getFlowDevice(device['DeviceID'], device['Name'], device['Location'], 'Water_Flow')
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'Air_Flow':
+                new_device = simuliot.getFlowDevice(device['DeviceID'], device['Name'], device['Location'], 'Air_Flow')
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'Thermo_Switch':
+                new_device = simuliot.getTempSwitchDevice(device['DeviceID'], device['Name'], device['Location'])
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'US_Sensor':
+                new_device = simuliot.getPresenceDevice(device['DeviceID'], device['Name'], device['Location'])
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'Volume_Sensor':
+                new_device = simuliot.getSoundSensorDevice(device['DeviceID'], device['Name'], device['Location'])
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'Presence_Sensor':
+                new_device = simuliot.getPresenceDevice(device['DeviceID'], device['Name'], device['Location'])
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'Sound_Sensor':
+                new_device = simuliot.getSoundSensorDevice(device['DeviceID'], device['Name'], device['Location'])
+                devicesCurrentSession.append(new_device)
+            elif device['Type'] == 'Hub':
+                new_device = simuliot.getHubDevice(device['DeviceID'], device['Name'], device['Location'])
+                devicesCurrentSession.append(new_device)
+            else:
+                return jsonify({"error": "Invalid device type"}), 404
+    else:
+        return jsonify({"error": "Session already started. Please clear the session before adding new devices"}), 400
+    return jsonify({"sucess":'Devices added to session. Awaiting save operation'}), 201
 
 @app.route('/store-session', methods=['GET'])
 def store_session():
@@ -74,11 +106,11 @@ def store_session():
         conn = simuliot.connect_db()
         if conn is not None:
             cur = conn.cursor()
-            cur.execute("CREATE TABLE IF NOT EXISTS CURRENTDEVICESESSION (id INTEGER PRIMARY KEY, name TEXT, type TEXT, location TEXT, value TEXT)")
+            cur.execute("CREATE TABLE IF NOT EXISTS CURRENTDEVICESESSION (id INTEGER PRIMARY KEY, name TEXT, type TEXT, location TEXT, value REAL)")
 
         ## Store the current session in the database. The current session is stored in the devicesCurrentSession list
             for device in devicesCurrentSession:
-                cur.execute("INSERT INTO DEVICES (id, name, type, location, value) VALUES (?, ?, ?, ?, ?)", (device['UUID'], device['name'], device['type'], device['location'], device['value']))
+                cur.execute("INSERT INTO CURRENTDEVICESESSION (id, name, type, location, value) VALUES (?, ?, ?, ?, ?)", (device.UUID, device.deviceName, device.Type, device.location, device.reading()["value"]))
             conn.commit()
             cur.close()
             conn.close()
@@ -90,28 +122,20 @@ def store_session():
 
 @app.route('/retrieve-session', methods=['GET'])
 def retrieve_session():
+    deviceSessionJSON = []
     try:
-        conn = simuliot.connect_db()
-        if conn is not None:
-            cur = conn.cursor()
-            cur.execute("SELECT * FROM CURRENTDEVICESESSION")
-            rows = cur.fetchall()
-            for row in rows:
-                device = {
-                    "id": row[0],
-                    "name": row[1],
-                    "type": row[2],
-                    "location": row[3],
-                    "value": row[4]
-                }
-                devicesCurrentSession.append(device)
-            cur.close()
-            conn.close()
+        for device in devicesCurrentSession:
+            deviceSessionJSON.append({
+                "id": device.UUID,
+                "name": device.deviceName,
+                "type": device.Type,
+                "location": device.location,
+                "value": device.reading()["value"]
+            }) ## Add device information to the list
+        return jsonify(deviceSessionJSON), 200
     except Exception as e:
-        simuliot.logger.critical('SQL Error: ' + str(e))
-        return "A database error has occured.", 500
-
-    return jsonify(devicesCurrentSession), 200
+        simuliot.logger.critical('Session Retrieval Error: ' + str(e))
+        return "An error has ocurred obtaining current session", 500
 
 @app.route('/clear-session', methods=['DELETE'])
 def clear_session():
@@ -141,9 +165,11 @@ def delete_device(device_id):
 
 @app.route('/start-session', methods=['GET'])
 def start_session():
-    device_thread.start()
-    device_thread.join()
-    return "Session has been started", 200
+    if device_thread.is_alive():
+        return "Session already started", 400
+    else:
+        device_thread.start()
+        return "Session has been started", 200
 
 @app.route('/kill-session',  methods=['GET'])
 def kill_session():

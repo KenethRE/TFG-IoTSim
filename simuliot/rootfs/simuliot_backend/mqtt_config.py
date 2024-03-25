@@ -7,7 +7,7 @@ mqtt_broker = {
 }
 
 mqtt_credentials = {
-    "user": "simuliot",
+    "user": "student",
     "pwd": "1234"
 }
 

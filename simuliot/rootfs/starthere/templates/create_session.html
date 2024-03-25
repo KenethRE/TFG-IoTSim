@@ -202,7 +202,9 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function(data){
+                alert("Data saved successfully!");
                 console.log(data);
+                window.location.href = "/display_session";
             }
         });
     }

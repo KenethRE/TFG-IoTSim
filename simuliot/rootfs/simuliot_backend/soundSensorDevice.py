@@ -5,10 +5,11 @@ import uuid
 # For non contact sensors (ie. sensors that use infrared or metal devices) the temperature range is -20 to 60 degrees Celsius.
 
 class soundSensorDevice:
-    def __init__(self, deviceID, deviceName, client):
+    def __init__(self, deviceID, deviceName, location, client):
         self.deviceID = deviceID
         self.deviceName = deviceName
         self.UUID = str(uuid.uuid4())
+        self.location = location
         self.client = client
 
     def contactProbe(self):

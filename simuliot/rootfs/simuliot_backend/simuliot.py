@@ -7,6 +7,7 @@ import flowDevice as flow
 import tempSwitchDevice as temp_switch
 import presenceDevice as presence
 import soundSensorDevice as sound
+import hubDevice as hub
 import paho.mqtt.client as mqtt
 import mqtt_config as mqtt_cfg
 import sqlite3
@@ -30,6 +31,8 @@ file_handler.setFormatter(formatter)
 logger.addHandler(stdout_handler)
 logger.addHandler(file_handler)
 logger.info('Starting Simulated IoT Device')
+
+
 
 def signal_handler(sig, frame):
     logger.info('Shutting down Simulated IoT Device')
@@ -59,7 +62,7 @@ def connect_db():
 
 def connect_mqtt():
     try:
-        Client = mqtt.Client(client_id="SimulIoT Session Client", clean_session=False)
+        Client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2, client_id="SimulIoT Session Client", clean_session=False)
         Client.on_connect = on_connect
         Client.on_message = on_message
         Client.username_pw_set(mqtt_cfg.mqtt_credentials["user"], mqtt_cfg.mqtt_credentials["pwd"])
@@ -68,65 +71,43 @@ def connect_mqtt():
     except Exception as e:
         logger.critical('Error: ' + str(e))
 
-def getTempDevice(deviceID, deviceName, isContactProbe, client):
-    tempDevice = temp.tempDevice(deviceID, deviceName, isContactProbe, client)
+client = connect_mqtt()
+
+def getTempDevice(deviceID, deviceName, location, isContactProbe):
+    tempDevice = temp.tempDevice(deviceID, deviceName, location, isContactProbe, client)
     return tempDevice
 
-def getSwitchConfigurableDevice(deviceID, deviceName, isContactProbe, client):
-    switchConfigurableDevice = switch_config.configurableSwitchDevice(deviceID, deviceName, isContactProbe, client)
+def getSwitchConfigurableDevice(deviceID, deviceName, location):
+    ## All configs will be empty for now
+    switchConfigurableDevice = switch_config.configurableSwitchDevice(deviceID, deviceName, location, None, client)
     return switchConfigurableDevice
 
-def getSwitchDevice(deviceID, deviceName, isContactProbe, client):
-    switchDevice = switch.switchDevice(deviceID, deviceName, isContactProbe, client)
+def getSwitchDevice(deviceID, deviceName, location):
+    switchDevice = switch.switchDevice(deviceID, deviceName, location, client)
     return switchDevice
 
-def getFlowDevice(deviceID, deviceName, isContactProbe, client):
-    flowDevice = flow.flowDevice(deviceID, deviceName, isContactProbe, client)
+def getFlowDevice(deviceID, deviceName, location, kind):
+    flowDevice = flow.flowDevice(deviceID, deviceName, location, client, kind)
     return flowDevice
 
-def getTempSwitchDevice(deviceID, deviceName, isContactProbe, client):
-    tempSwitchDevice = temp_switch.tempSwitchDevice(deviceID, deviceName, isContactProbe, client)
+def getTempSwitchDevice(deviceID, deviceName, location):
+    tempSwitchDevice = temp_switch.tempSwitchDevice(deviceID, deviceName, location, client)
     return tempSwitchDevice
 
-def getPresenceDevice(deviceID, deviceName, isContactProbe, client):
-    presenceDevice = presence.presenceDevice(deviceID, deviceName, isContactProbe, client)
+def getPresenceDevice(deviceID, deviceName, location):
+    presenceDevice = presence.presenceDevice(deviceID, deviceName, location, client)
     return presenceDevice
 
-def getSoundSensorDevice(deviceID, deviceName, isContactProbe, client):
-    soundSensorDevice = sound.soundSensorDevice(deviceID, deviceName, isContactProbe, client)
+def getSoundSensorDevice(deviceID, deviceName, location):
+    soundSensorDevice = sound.soundSensorDevice(deviceID, deviceName, location, client)
     return soundSensorDevice
 
-def start(devicesCurrentSession):
-    client = connect_mqtt()
+def getHubDevice(deviceID, deviceName, location):
+    hubDevice = hub.hubDevice(deviceID, deviceName, location, client)
+    return hubDevice
 
+def start(devicesCurrentSession):
     while True:
         for device in devicesCurrentSession:
-            if device['type'] == 'temperature':
-                tempDevice = getTempDevice(device['id'], device['name'], device['isContactProbe'], client)
-                device['reading'] = tempDevice.reading()
-                device['publish'] = tempDevice.publish()
-            elif device['type'] == 'switch_configurable':
-                switchConfigurableDevice = getSwitchConfigurableDevice(device['id'], device['name'], device['isContactProbe'], client)
-                device['reading'] = switchConfigurableDevice.reading()
-                device['publish'] = switchConfigurableDevice.publish()
-            elif device['type'] == 'switch':
-                switchDevice = getSwitchDevice(device['id'], device['name'], device['isContactProbe'], client)
-                device['reading'] = switchDevice.reading()
-                device['publish'] = switchDevice.publish()
-            elif device['type'] == 'flow':
-                flowDevice = getFlowDevice(device['id'], device['name'], device['isContactProbe'], client)
-                device['reading'] = flowDevice.reading()
-                device['publish'] = flowDevice.publish()
-            elif device['type'] == 'temp_switch':
-                tempSwitchDevice = getTempSwitchDevice(device['id'], device['name'], device['isContactProbe'], client)
-                device['reading'] = tempSwitchDevice.reading()
-                device['publish'] = tempSwitchDevice.publish()
-            elif device['type'] == 'presence':
-                presenceDevice = getPresenceDevice(device['id'], device['name'], device['isContactProbe'], client)
-                device['reading'] = presenceDevice.reading()
-                device['publish'] = presenceDevice.publish()
-            elif device['type'] == 'sound_sensor':
-                soundSensorDevice = getSoundSensorDevice(device['id'], device['name'], device['isContactProbe'], client)
-                device['reading'] = soundSensorDevice.reading()
-                device['publish'] = soundSensorDevice.publish()
+            device.publish()
         sleep(5)

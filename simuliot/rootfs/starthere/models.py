@@ -1,15 +1,6 @@
 from django.db import models
-from django.core import serializers
 
-# Create your models here.
-class Plano(models.Model):
-    Upload_Map = models.ImageField(upload_to='images/maps/')
-
-    class Meta:
-        app_label = 'starthere'
-
-class DeviceManager(models.Manager):
-    def mapTypeToIcon(self, Type):
+def mapTypeToIcon(Type):
         match Type:
             case 'Thermometer':
                 return 'thermometer'
@@ -32,15 +23,27 @@ class DeviceManager(models.Manager):
             case 'Volume_Sensor':
                 return 'brand_awareness'
 
+# Create your models here.
+class Plano(models.Model):
+    Upload_Map = models.ImageField(upload_to='images/maps/')
+
+    class Meta:
+        app_label = 'starthere'
+
+class DeviceManager(models.Manager):
     def create_device(self, DeviceID, Type, Description, Manufacturer):
-        device = self.create(DeviceID=DeviceID, Type=self.mapTypeToIcon(Type), Description=Description, Manufacturer=Manufacturer)
+        device = self.create(DeviceID=DeviceID, Type=mapTypeToIcon(Type), Description=Description, Manufacturer=Manufacturer)
         return device
-    def create_session_device(self, DeviceID, Type, Location):
-        device = self.create(DeviceID=DeviceID, Type=Type, Location=Location)
+    def create_session_device(self, DeviceID, Name, Type, Location):
+        device = self.create(DeviceID=DeviceID, Name=Name, Type=Type, Location=Location)
+        return device
+    def create_session_device_value(self, DeviceID, Name, Type, Location, Value):
+        device = self.create(DeviceID=DeviceID, Name=Name, Type=mapTypeToIcon(Type), Location=Location, Value=Value)
         return device
 
 class Devices(models.Model):
     DeviceID = models.CharField(max_length=50)
+    Name = models.CharField(max_length=50, default='0')
     Type = models.CharField(max_length=50)
     Description = models.CharField(max_length=50)
     Manufacturer = models.CharField(max_length=50)
@@ -51,6 +54,7 @@ class Devices(models.Model):
     def printDevice(self):
         deviceString = {
             "DeviceID": self.DeviceID,
+            "Name": self.Name,
             "Type": self.Type,
             "Description": self.Description,
             "Manufacturer": self.Manufacturer,
