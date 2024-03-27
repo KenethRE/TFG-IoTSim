@@ -74,36 +74,36 @@ def connect_mqtt():
 client = connect_mqtt()
 
 def getTempDevice(deviceID, deviceName, location, type, isContactProbe):
-    tempDevice = temp.tempDevice(deviceID, deviceName, location, type, isContactProbe, client)
+    tempDevice = temp.tempDevice(deviceID, deviceName, location, type, client, isContactProbe)
     return tempDevice
 
-def getSwitchConfigurableDevice(deviceID, deviceName, location, type):
+def getSwitchConfigurableDevice(deviceID, deviceName, location, type, config):
     ## All configs will be empty for now
-    switchConfigurableDevice = switch_config.configurableSwitchDevice(deviceID, deviceName, location, None, type, client)
+    switchConfigurableDevice = switch_config.configurableSwitchDevice(deviceID, deviceName, location, type, client, config)
     return switchConfigurableDevice
 
-def getSwitchDevice(deviceID, deviceName, location):
-    switchDevice = switch.switchDevice(deviceID, deviceName, location, client)
+def getSwitchDevice(deviceID, deviceName, location, type):
+    switchDevice = switch.switchDevice(deviceID, deviceName, location, type, client)
     return switchDevice
 
-def getFlowDevice(deviceID, deviceName, location, kind):
-    flowDevice = flow.flowDevice(deviceID, deviceName, location, client, kind)
+def getFlowDevice(deviceID, deviceName, location, type, kind):
+    flowDevice = flow.flowDevice(deviceID, deviceName, location, type, client, kind)
     return flowDevice
 
-def getTempSwitchDevice(deviceID, deviceName, location):
-    tempSwitchDevice = temp_switch.tempSwitchDevice(deviceID, deviceName, location, client)
+def getTempSwitchDevice(deviceID, deviceName, location, type):
+    tempSwitchDevice = temp_switch.tempSwitchDevice(deviceID, deviceName, location, type, client)
     return tempSwitchDevice
 
-def getPresenceDevice(deviceID, deviceName, location):
-    presenceDevice = presence.presenceDevice(deviceID, deviceName, location, client)
+def getPresenceDevice(deviceID, deviceName, location, type):
+    presenceDevice = presence.presenceDevice(deviceID, deviceName, location, type, client)
     return presenceDevice
 
-def getSoundSensorDevice(deviceID, deviceName, location):
-    soundSensorDevice = sound.soundSensorDevice(deviceID, deviceName, location, client)
+def getSoundSensorDevice(deviceID, deviceName, location, type):
+    soundSensorDevice = sound.soundSensorDevice(deviceID, deviceName, location, type, client)
     return soundSensorDevice
 
-def getHubDevice(deviceID, deviceName, location):
-    hubDevice = hub.hubDevice(deviceID, deviceName, location, client)
+def getHubDevice(deviceID, deviceName, location, type):
+    hubDevice = hub.hubDevice(deviceID, deviceName, location, type, client)
     return hubDevice
 
 def start(devicesCurrentSession):

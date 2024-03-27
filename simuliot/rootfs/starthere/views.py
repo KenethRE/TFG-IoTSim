@@ -71,7 +71,7 @@ def create_session(request):
 			## trigger save session in backend
 			req = urllib.request.urlopen('http://127.0.0.1:8088/store-session')
 			if req.status == 201:
-				return HttpResponse('Session created successfully')
+				return HttpResponseRedirect('/display_session')
 			else:
 				return HttpResponse('Error storing session', status=500)
 		except Exception as e:
@@ -93,7 +93,7 @@ def display_session(request):
 			return HttpResponse('Error starting session', status=500)
 
 def terminate_session(request):
-	if request.method == 'DELETE':
+	if request.method == 'GET':
 		req = urllib.request.urlopen('http://127.0.0.1:8088/kill-session')
 		if req.status == 200:
 			Devices.objects.all().delete()

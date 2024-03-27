@@ -15,7 +15,7 @@ class hubDevice:
     def reading(self):
         return {
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
-            "value": "hub"
+            "value": "0"
         }
     
     def switch(self):

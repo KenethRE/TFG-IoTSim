@@ -20,7 +20,9 @@ class tempSwitchDevice:
     def reading(self):
         return {
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
-            "value": self.nonContactProbe() + self.switchState
+            "value": self.nonContactProbe(),
+            "switch_state": self.switchState
+
         }
     def switch(self):
         self.switchState = not self.switchState

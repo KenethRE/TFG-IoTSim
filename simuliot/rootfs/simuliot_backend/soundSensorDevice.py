@@ -13,16 +13,10 @@ class soundSensorDevice:
         self.type = type
         self.client = client
 
-    def contactProbe(self):
-        return round(uniform(-273.15, 300), 2)
-    
-    def nonContactProbe(self):
-        return round(uniform(-20, 60), 2)
-
     def reading(self):
         return {
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
-            "value": self.contactProbe() if self.isContactProbe else self.nonContactProbe()
+            "value": round(uniform(0, 100), 2)
         }
     def publish(self):
         self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
