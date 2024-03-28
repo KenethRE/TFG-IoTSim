@@ -191,23 +191,27 @@
             }
             data.push({location: room.children[0].children[0].textContent, devices: deviceIDs});
         }
-        console.log(JSON.stringify(data));
-        $.ajax({
-            type: "POST",
-            url: "/create_session",
+        fetch("/create_session", {
+            method: "POST",
+            redirect: "follow",
+            body: JSON.stringify(data),
             headers: {
-                "X-CSRFToken": "{{ csrf_token }}"
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json"
             },
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(data){
-                alert("Data saved successfully!");
-                console.log(data);
-                window.location.href = "/display_session";
-            }
-        });
+            credentials: "same-origin",
+    })
+    .then(response => {
+        console.log(response);
+        if (response.redirected) {
+            window.location.replace(response.url);
+        }
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+    });
     }
+
 </script>
 
 <head>

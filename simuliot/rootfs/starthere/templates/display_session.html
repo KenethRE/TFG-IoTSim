@@ -129,7 +129,7 @@
 	<div class="row container d-flex justify-content-center">
 		<div class="col-md-12">
 			<div class="row">
-				<div class="col-md-3">
+				<div class="col-md-15">
 					<div class="card">
 						<div class="card-header">
 							<h4 class="card-header-text" style="font-weight: bolder;">Current Session</h4>
@@ -152,13 +152,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-9">
-					<h1 style="font-weight: bolder; margin-left: 10px;">map</h1>
-					<div class="text-left" class="btn btn-primary">
-						<a href="{% url 'start' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Return to Menu</a>
-						<a href="{% url 'terminate_session' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Terminate Session</a>
-				</div>
-				</div>
+				<a href="{% url 'start' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Return to Menu</a>
+				<a href="{% url 'terminate_session' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Terminate Session</a>
 			</div>
 		</div>
 	</div>

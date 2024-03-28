@@ -62,7 +62,7 @@ def add_device():
         for device in new_devices:
             if device['Type'] == 'Thermometer':
                 new_device = simuliot.getTempDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'], True)
-                devicesCurrentSession.append(device)
+                devicesCurrentSession.append(new_device)
             elif device['Type'] == 'Switch_Config':
                 new_device = simuliot.getSwitchConfigurableDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'], None)
                 devicesCurrentSession.append(new_device)
