@@ -11,6 +11,7 @@ urlpatterns = [
 	path('display_session', display_session, name = 'display_session'),
 	path('create_session', create_session, name = 'create_session'),
 	path('terminate_session', terminate_session, name = 'terminate_session'),
+	path('start_session', start, name = 'start_session'),
 ]
 
 if settings.DEBUG:
