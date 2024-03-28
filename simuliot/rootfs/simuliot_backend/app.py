@@ -1,10 +1,11 @@
 from flask import Flask, jsonify, request
 from flask_socketio import SocketIO, emit
-from threading import Thread
 from signal import pthread_kill, SIGINT
-import json
+from threading import Thread
+import json, os
 
 import simuliot
+import os
 app = Flask(__name__)
 
 # Routes
@@ -12,7 +13,6 @@ app = Flask(__name__)
 
 devices = []
 devicesCurrentSession = []
-device_thread = Thread(target = simuliot.start, args = (devicesCurrentSession,))
 
 conn = simuliot.connect_db()
 try:
@@ -170,13 +170,25 @@ def delete_device(device_id):
 
 @app.route('/start-session', methods=['GET'])
 def start_session():
-    device_thread.start()
-    device_thread.join()
-    return "Session has been started", 200
+    ## Start the thread after sending http response
+    global device_thread_pid 
+    device_thread_pid = os.fork()
+    print(device_thread_pid)
+    if device_thread_pid == 0:
+        # Child process
+        device_thread = Thread(target = simuliot.start, args = (devicesCurrentSession,))
+        device_thread.start()
+        device_thread.join()
+    else:
+        # Parent process
+        return "Session has been started", 200
 
 @app.route('/kill-session',  methods=['GET'])
 def kill_session():
-    pthread_kill(device_thread.ident, SIGINT)
+    if device_thread_pid is None:
+        return "No session to kill", 404
+    print('Killing session {}'.format(device_thread_pid))
+    os.kill(device_thread_pid, SIGINT)
     return "Session has been killed", 200
 
 if __name__ == "__main__":
