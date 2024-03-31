@@ -118,14 +118,31 @@
 	function terminateSession() {
 		if (confirm("Are you sure you want to terminate the session? You will be redirected to the main menu.")) {
 			fetch('/terminate_session', {
-				method: 'POST',
+				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
 					'X-CSRFToken': '{{ csrf_token }}'
 				}
 			}).then(response => {
 				if (response.ok) {
-					window.location.href = "{% url 'start' %}";
+					window.location.href = "{% url 'display_session' %}";
+				}
+			});
+		}
+	}
+	function startSession() {
+		if (confirm("All devices will start publishing. Are you sure you want to continue?")) {
+			fetch('/start_session', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': '{{ csrf_token }}'
+				}
+			}).then(response => {
+				if (response.ok) {
+					window.location.href = "{% url 'display_session' %}";
+				} else {
+					alert("Error starting session.");
 				}
 			});
 		}
@@ -171,7 +188,7 @@
 				</div>
 				<a href="{% url 'start' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Return to Menu</a>
 				<button onclick="terminateSession()" class="btn btn-primary" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Terminate Session</button>
-				<a href="{% url 'start_session' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Start Session</a>
+				<button onclick="startSession()" class="btn btn-primary" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Start Session</button>
 			</div>
 		</div>
 	</div>

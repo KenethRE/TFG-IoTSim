@@ -14,6 +14,8 @@ app = Flask(__name__)
 devices = []
 devicesCurrentSession = []
 
+device_thread_pid = None
+
 conn = simuliot.connect_db()
 try:
     if conn is not None:
@@ -172,24 +174,29 @@ def delete_device(device_id):
 def start_session():
     ## Start the thread after sending http response
     global device_thread_pid 
+    if device_thread_pid is not None:
+        return "Session already started", 400
     device_thread_pid = os.fork()
     print(device_thread_pid)
     if device_thread_pid == 0:
         # Child process
         device_thread = Thread(target = simuliot.start, args = (devicesCurrentSession,))
         device_thread.start()
-        device_thread.join()
     else:
         # Parent process
         return "Session has been started", 200
 
 @app.route('/kill-session',  methods=['GET'])
 def kill_session():
+    global device_thread_pid
     if device_thread_pid is None:
         return "No session to kill", 404
-    print('Killing session {}'.format(device_thread_pid))
-    os.kill(device_thread_pid, SIGINT)
-    return "Session has been killed", 200
+    simuliot.logger.info('Killing session {}'.format(device_thread_pid))
+    if device_thread_pid != 0:
+        pthread_kill(device_thread_pid, SIGINT)
+        device_thread_pid = None
+        devicesCurrentSession.clear()
+        return "Session has been killed", 200
 
 if __name__ == "__main__":
     app.run('127.0.0.1', 8088, debug=True)

@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.core import serializers
 from .forms import MapUpload
 from .models import Plano, Devices
 import os
@@ -90,13 +89,18 @@ def display_session(request):
 
 def start_session(request):
 	if request.method == 'GET':
-		urllib.request.urlopen('http://127.0.0.1:8088/start-session')
+		try:
+			urllib.request.urlopen('http://127.0.0.1:8088/start-session')
+			return HttpResponseRedirect('/display_session')
+		except Exception as e:
+			print(e)
+			return HttpResponse('Error starting session', status=500)
 	return HttpResponseRedirect('/display_session')
 def terminate_session(request):
 	if request.method == 'GET':
 		req = urllib.request.urlopen('http://127.0.0.1:8088/kill-session')
 		if req.status == 200:
 			Devices.objects.all().delete()
-			return HttpResponseRedirect('/')
+			return HttpResponseRedirect('/display_session')
 		else:
 			return HttpResponse('Error terminating session', status=500)
