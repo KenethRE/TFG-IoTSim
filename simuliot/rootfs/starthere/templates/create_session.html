@@ -139,6 +139,14 @@
                     document.getElementById("room_name").style.border = "1px solid red";
                     return;
                 }
+                // check for repeated room names
+                var rooms = document.getElementById("rooms").children;
+                for (var i = 0; i < rooms.length; i++){
+                    if (rooms[i].children[0].children[0].textContent == document.getElementById("room_name").value){
+                        alert("Room name already exists");
+                        return;
+                    }
+                }
                 if (document.getElementById("rooms").children.length >= 6){
                     alert("You can only have 6 rooms");
                     return;

@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_socketio import SocketIO, emit
-from signal import pthread_kill, SIGINT
-from threading import Thread
 import json, os
+import thread_pool
 
 import simuliot
 import os
@@ -12,7 +11,9 @@ app = Flask(__name__)
 # GET /devices
 
 devices = []
+global devicesCurrentSession
 devicesCurrentSession = []
+
 
 device_thread_pid = None
 
@@ -58,51 +59,18 @@ def get_device(device_id):
 # POST /devices
 @app.route('/devices', methods=['POST'])
 def add_device():
-    new_devices = request.get_json()
+    global devicesCurrentSession
+    devicesJson = request.get_json()
     ## check if devicesCurrentSession is empty. If it is, then add the devices to the list
     if len(devicesCurrentSession) == 0:
-        for device in new_devices:
-            if device['Type'] == 'Thermometer':
-                new_device = simuliot.getTempDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'], True)
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Switch_Config':
-                new_device = simuliot.getSwitchConfigurableDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'], None)
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Switch':
-                new_device = simuliot.getSwitchDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Water_Flow':
-                new_device = simuliot.getFlowDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'], 'Water_Flow')
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Air_Flow':
-                new_device = simuliot.getFlowDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'], 'Air_Flow')
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Thermo_Switch':
-                new_device = simuliot.getTempSwitchDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'US_Sensor':
-                new_device = simuliot.getPresenceDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Volume_Sensor':
-                new_device = simuliot.getSoundSensorDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Presence_Sensor':
-                new_device = simuliot.getPresenceDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Sound_Sensor':
-                new_device = simuliot.getSoundSensorDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
-                devicesCurrentSession.append(new_device)
-            elif device['Type'] == 'Hub':
-                new_device = simuliot.getHubDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
-                devicesCurrentSession.append(new_device)
-            else:
-                return jsonify({"error": "Invalid device type"}), 404
+        devicesCurrentSession = simuliot.gen_devices(devicesJson)
     else:
         return jsonify({"error": "Session already started. Please clear the session before adding new devices"}), 400
     return jsonify({"sucess":'Devices added to session. Awaiting save operation'}), 201
 
 @app.route('/store-session', methods=['GET'])
 def store_session():
+    global devicesCurrentSession
     ## Check if the table DevicesSession exists. If not, create it
     try:
         conn = simuliot.connect_db()
@@ -129,6 +97,7 @@ def store_session():
 
 @app.route('/retrieve-session', methods=['GET'])
 def retrieve_session():
+    global devicesCurrentSession
     deviceSessionJSON = []
     try:
         for device in devicesCurrentSession:
@@ -172,29 +141,20 @@ def delete_device(device_id):
 
 @app.route('/start-session', methods=['GET'])
 def start_session():
-    ## Start the thread after sending http response
-    global device_thread_pid 
-    if device_thread_pid is not None:
-        return "Session already started", 400
-    device_thread_pid = os.fork()
-    print(device_thread_pid)
-    if device_thread_pid == 0:
-        # Child process
-        device_thread = Thread(target = simuliot.start, args = (devicesCurrentSession,))
-        device_thread.start()
-    else:
-        # Parent process
-        return "Session has been started", 200
+    ## Call ThreadPool to start the session
+    global threads 
+    threads = thread_pool.ThreadPool(devicesCurrentSession)
+    threads.start()
+    return "Session has been started", 200
 
 @app.route('/kill-session',  methods=['GET'])
 def kill_session():
-    global device_thread_pid
-    if device_thread_pid is None:
+    global threads
+    if threads is None:
         return "No session to kill", 404
-    simuliot.logger.info('Killing session {}'.format(device_thread_pid))
+    simuliot.logger.info('Killing session with {} devices'.format(len(threads.threads)))
     if device_thread_pid != 0:
-        pthread_kill(device_thread_pid, SIGINT)
-        device_thread_pid = None
+        threads.stop()
         devicesCurrentSession.clear()
         return "Session has been killed", 200
 
