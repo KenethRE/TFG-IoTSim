@@ -123,6 +123,7 @@
         ev.dataTransfer.setData("text", ev.target.id);
     }
     function dropClone(ev) {
+        ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         ev.target.appendChild(document.getElementById(data).cloneNode(true));
     }
@@ -219,7 +220,13 @@
         console.error("Error:", error);
     });
     }
-
+    function deleteCardBlock() {
+        var rooms = document.getElementById("rooms").children;
+        if (rooms.length == 0){
+            return;
+        }
+        document.getElementById("rooms").removeChild(rooms[rooms.length - 1]);
+    }
 </script>
 
 <head>
@@ -255,11 +262,11 @@
             </div>
         </div>
     </div>
-    <!-- Make 4 -->
     <div class="col-md-9">
         <h2 class="text-center">Create a device session</h2>
         <input id="room_name" type="text" class="form-control" placeholder="Room Name" style="margin-bottom: 10px;">
         <button onclick="addCardBlock()" class="btn btn-primary">Add Room</button>
+        <button onclick="deleteCardBlock()" class="btn btn-primary">Delete Last Added Room</button>
         <h3 class="text-center" style="font-weight: bolder;">Session</h4>
         <div class="card" id="rooms"></div>
     </div>

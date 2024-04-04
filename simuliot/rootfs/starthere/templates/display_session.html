@@ -149,6 +149,29 @@
 			});
 		}
 	}
+	function UpdateDeviceValue(id) {
+		id_val = id + "_val";
+		var value = document.getElementById(id_val).value;
+		var deviceID = id;
+		console.log(value + " " + deviceID);
+		fetch('/update_device_value', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': '{{ csrf_token }}'
+			},
+			body: JSON.stringify({
+				'value': value,
+				'deviceID': deviceID
+			})
+		}).then(response => {
+			if (response.ok) {
+				alert("Device value updated.");
+			} else {
+				alert("Error updating device value.");
+			}
+		});
+	}
 </script>
 <head>
 	<meta charset="UTF-8">
@@ -179,7 +202,8 @@
 											<span class="material-symbols-outlined" style="font-size: 20px;">{{ device.Type }}</span>
 											<h4 class="card-title text-wrap" style="font-weight: bolder; font-size: 15px; padding: 5px;">{{ device.Name }}</h4>
 											<h4 class="card-text text-wrap" style="font-weight: bold; font-size: 15px; padding: 5px;">{{ device.Location }}</h4>
-											<h4 class="card-text text-wrap" style="font-size: 10px; padding: 5px;">{{ device.Value }}</h4>
+											<input id="{{ device.DeviceID }}_val" type="number" class="form-control" id="value" placeholder="{{ device.Value }}" style="margin-top: 10px;">
+											<button id="{{ device.DeviceID }}" onclick="UpdateDeviceValue(this.id)" class="btn btn-primary" style="margin-top: 10px; max-width: 50%;">Update</button>
 										</div>
 									</div>
 								</div>

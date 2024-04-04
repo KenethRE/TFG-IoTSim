@@ -104,3 +104,14 @@ def terminate_session(request):
 			return HttpResponseRedirect('/')
 		else:
 			return HttpResponse('Error terminating session', status=500)
+
+def update_device_value(request):
+	if request.method == 'POST':
+		print(request.body)
+		device = json.loads(request.body)
+		req = urllib.request.Request('http://127.0.0.1:8088/update_device_value', json.dumps(device).encode(), {'Content-Type': 'application/json'}, method='POST')
+		response = urllib.request.urlopen(req)
+		if response.status == 200:
+			return HttpResponse('Device updated')
+		else:
+			return HttpResponse('Error updating device', status=500)

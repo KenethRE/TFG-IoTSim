@@ -23,3 +23,6 @@ class presenceDevice:
         }
     def publish(self):
         self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
+
+    def _publish (self, topic, payload):
+        self.client.publish(topic, payload)

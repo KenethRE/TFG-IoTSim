@@ -26,3 +26,7 @@ class configurableSwitchDevice:
     
     def publish(self):
         self.client.publish("homeassistant/sensor/" + self.UUID + "/switch", self.switchState)
+
+
+    def _publish (self, topic, payload):
+        self.client.publish(topic, payload)

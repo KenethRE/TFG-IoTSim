@@ -162,5 +162,23 @@ def kill_session():
         devicesCurrentSession.clear()
         return "Session has been killed", 200
 
+@app.route('/session-status', methods=['GET'])
+def session_status():
+    global threads
+    if threads is None:
+        return "No session running", 404
+    return threads.status()
+
+@app.route('/update_device_value', methods=['POST'])
+def publish_device():
+    device = next((device for device in devicesCurrentSession if device.UUID == request.get_json()['deviceID']), None)
+    print (device)
+    if device:
+        device._publish(device.reading()['state_topic'], request.get_json()['value'])
+        return "Device published", 200
+    else:
+        return "Device not found", 404
+
+
 if __name__ == "__main__":
     app.run('127.0.0.1', 8088, debug=True)
