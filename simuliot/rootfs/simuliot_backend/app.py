@@ -13,6 +13,8 @@ app = Flask(__name__)
 devices = []
 global devicesCurrentSession
 devicesCurrentSession = []
+global threads
+threads = None
 
 
 device_thread_pid = None
@@ -142,7 +144,9 @@ def delete_device(device_id):
 @app.route('/start-session', methods=['GET'])
 def start_session():
     ## Call ThreadPool to start the session
-    global threads 
+    if len(devicesCurrentSession) == 0:
+        return "No devices in session", 404
+    global threads
     threads = thread_pool.ThreadPool(devicesCurrentSession)
     threads.start()
     return "Session has been started", 200

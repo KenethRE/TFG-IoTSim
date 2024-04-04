@@ -1,5 +1,6 @@
 import threading
 import queue
+from time import sleep
 
 class ThreadPool:
     def __init__(self, devices):
@@ -17,6 +18,7 @@ class ThreadPool:
         while not self.stop_flag.is_set():
             try:
                 device.publish()
+                sleep(5)
             except queue.Empty:
                 continue
 

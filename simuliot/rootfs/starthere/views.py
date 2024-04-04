@@ -97,10 +97,10 @@ def start_session(request):
 			return HttpResponse('Error starting session', status=500)
 	return HttpResponseRedirect('/display_session')
 def terminate_session(request):
-	if request.method == 'GET':
+	if request.method == 'DELETE':
 		req = urllib.request.urlopen('http://127.0.0.1:8088/kill-session')
 		if req.status == 200:
 			Devices.objects.all().delete()
-			return HttpResponseRedirect('/display_session')
+			return HttpResponseRedirect('/')
 		else:
 			return HttpResponse('Error terminating session', status=500)

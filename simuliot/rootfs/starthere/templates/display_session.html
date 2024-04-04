@@ -118,14 +118,16 @@
 	function terminateSession() {
 		if (confirm("Are you sure you want to terminate the session? You will be redirected to the main menu.")) {
 			fetch('/terminate_session', {
-				method: 'GET',
+				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',
 					'X-CSRFToken': '{{ csrf_token }}'
 				}
 			}).then(response => {
-				if (response.ok) {
-					window.location.href = "{% url 'display_session' %}";
+				if (response.redirected) {
+            	window.location.replace(response.url);
+        		} else {
+					alert("No session found to terminate.");
 				}
 			});
 		}
