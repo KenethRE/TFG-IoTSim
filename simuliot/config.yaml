@@ -1,11 +1,10 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: SimulIoT
-version: "0.0.7"
+version: "0.0.11"
 slug: simuliot
 description: This add-on allows you to simulate IoT devices.
 url: "https://github.com/KenethRE/TFG-IoTSim"
-ingress: true
-ingress_port: 8087
+webui: http://[HOST]:[PORT:8099]
 arch:
   - armhf
   - armv7
@@ -19,4 +18,6 @@ options:
   message: "Hello world..."
 schema:
   message: "str?"
-image: "ghcr.io/kenethre/{arch}-simuliot"
+ports:
+  8099/tcp: 8099
+#image: "ghcr.io/kenethre/{arch}-simuliot"
