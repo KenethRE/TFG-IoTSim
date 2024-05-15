@@ -1,13 +1,10 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: SimulIoT
-version: "0.0.11"
+version: "0.0.13"
 slug: simuliot
 description: This add-on allows you to simulate IoT devices.
 url: "https://github.com/KenethRE/TFG-IoTSim"
 webui: http://[HOST]:[PORT:8099]
-hassio_api: true
-hassio_role: admin
-homeassistant_api: true
 arch:
   - armhf
   - armv7
@@ -18,9 +15,17 @@ init: false
 map:
   - share:rw
 options:
-  message: "Hello world..."
+  message: "This is a test"
+  mqtt_broker: "core-mosquitto"
+  mqtt_port: 1883
+  mqtt_username: ""
+  mqtt_password: ""
 schema:
   message: "str?"
+  mqtt_broker: "str?"
+  mqtt_port: "int?"
+  mqtt_username: "str?"
+  mqtt_password: "str?"
 ports:
   8099/tcp: 8099
 
