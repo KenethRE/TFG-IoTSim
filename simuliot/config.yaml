@@ -4,7 +4,8 @@ version: "0.0.6"
 slug: simuliot
 description: This add-on allows you to simulate IoT devices.
 url: "https://github.com/KenethRE/TFG-IoTSim"
-webui: "http://127.0.0.1:8087/"
+ingress: true
+ingress_port: 8087
 arch:
   - armhf
   - armv7
