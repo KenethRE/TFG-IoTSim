@@ -6,4 +6,4 @@ echo "Starting Simulator Backend..."
 python3 ./simuliot_backend/app.py &
 sleep 1
 echo "Starting Simulator Frontend..."
-python3 ./manage.py runserver 8087
+python3 ./manage.py runserver 8099
