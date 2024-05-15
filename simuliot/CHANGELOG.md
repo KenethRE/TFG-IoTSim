@@ -23,3 +23,7 @@
 ## 0.0.6
 
 - Changed from ingress to webui configuration. Added error logging in web interface.
+
+## 0.0.7
+
+- Changed ingress config
