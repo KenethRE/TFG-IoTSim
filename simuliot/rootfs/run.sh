@@ -1,8 +1,9 @@
 #!/usr/bin/with-contenv bashio
 
-MQTT_BROKER_HOST=$(bashio::services "host")
-MQTT_USER=$(bashio::services "username")
-MQTT_PWD=$(bashio::services "password")
+
+MQTT_BROKER_HOST=$(bashio::services mqtt "host")
+MQTT_USER=$(bashio::services mqtt "username")
+MQTT_PWD=$(bashio::services mqtt "password")
 DJANGO_LOG_LEVEL=DEBUG
 
 export DJANGO_LOG_LEVEL
@@ -20,4 +21,4 @@ echo "Starting Simulator Frontend..."
 gunicorn --bind 0.0.0.0:8087 simuliot_frontend.wsgi:application &
 #python3 ./manage.py runserver 8087 >> /simuliot_run.log &
 
-nginx -g "daemon off;error_log /simuliot_nginx.log debug;"
+nginx -g "daemon off;error_log /simuliot_nginx_error.log debug;"

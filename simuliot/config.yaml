@@ -5,6 +5,9 @@ slug: simuliot
 description: This add-on allows you to simulate IoT devices.
 url: "https://github.com/KenethRE/TFG-IoTSim"
 webui: http://[HOST]:[PORT:8099]
+hassio_api: true
+hassio_role: admin
+homeassistant_api: true
 arch:
   - armhf
   - armv7
@@ -20,4 +23,5 @@ schema:
   message: "str?"
 ports:
   8099/tcp: 8099
+
 #image: "ghcr.io/kenethre/{arch}-simuliot"
