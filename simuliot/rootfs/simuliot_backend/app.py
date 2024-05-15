@@ -20,6 +20,11 @@ threads = None
 device_thread_pid = None
 
 conn = simuliot.connect_db()
+
+PID = os.getpid()
+with open('simuliot_backend.pid', 'w') as f:
+    f.write(str(PID))
+
 try:
     if conn is not None:
         cur = conn.cursor()

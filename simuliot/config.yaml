@@ -19,4 +19,5 @@ options:
   message: "Hello world..."
 schema:
   message: "str?"
+startup: application
 image: "ghcr.io/kenethre/{arch}-simuliot"

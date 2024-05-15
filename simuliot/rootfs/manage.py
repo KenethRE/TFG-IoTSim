@@ -5,6 +5,9 @@ import sys
 
 
 def main():
+    PID = os.getpid()
+    with open('simuliot_frontend.pid', 'w') as f:
+        f.write(str(PID))
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'simuliot_frontend.settings')
     try:

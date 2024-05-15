@@ -40,9 +40,9 @@ def signal_handler(sig, frame):
 
 def connect_db():
     conn = None
-    if (os.path.isfile('../tfg-test.db')):
+    if (os.path.isfile('/tfg-test.db')):
         try:
-            conn = sqlite3.connect('../tfg-test.db')
+            conn = sqlite3.connect('/tfg-test.db')
             logger.info("Connected to SQLite DB")
         except sqlite3.Error as e:
             logger.critical('Failure to open DB. Please reinstall addon: ' + str(e))
