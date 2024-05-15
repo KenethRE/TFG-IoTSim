@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import Plano
+from .models import Plano, Devices
 
 
 class MapUpload(forms.ModelForm):
@@ -10,5 +10,5 @@ class MapUpload(forms.ModelForm):
 
 class UpdateDeviceValue(forms.ModelForm):
 	class Meta:
-		model = Plano
-		fields = ['Device_Value']
+		model = Devices
+		fields = ['Value']

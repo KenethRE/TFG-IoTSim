@@ -85,7 +85,7 @@
                         {% if planos > 0 %}
                         <button onclick="getStarted()" class="btn btn-primary" role="button" id="getStartedBtn">Get Started</button>
                         {% else %}
-                        <a href="{% url 'upload_map' %}" class="btn btn-primary" role="button">Get Started</a>
+                        <a href="{% url 'create_session' %}" class="btn btn-primary" role="button">Get Started</a>
                         {% endif %}
                         
                     </div>
@@ -93,7 +93,7 @@
                 {% if planos > 0 %}
                 <div class="col">
                     <div class="buttons">
-                        <a href="{% url 'display_map' %}" class="btn btn-primary" role="button">Continue Session</a>
+                        <a href="{% url 'display_session' %}" class="btn btn-primary" role="button">Continue Session</a>
                     </div>
                 </div>
                 {% endif %}

@@ -15,3 +15,7 @@
 ## 0.0.4
 
 - Added thermometer device.
+
+## 0.0.5
+
+- Added web interface. Testing ingress options
