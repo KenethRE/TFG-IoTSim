@@ -19,3 +19,7 @@
 ## 0.0.5
 
 - Added web interface. Testing ingress options
+
+## 0.0.6
+
+- Changed from ingress to webui configuration. Added error logging in web interface.

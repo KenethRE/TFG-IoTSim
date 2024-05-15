@@ -8,8 +8,6 @@ import tempSwitchDevice as temp_switch
 import presenceDevice as presence
 import soundSensorDevice as sound
 import hubDevice as hub
-import paho.mqtt.client as mqtt
-import mqtt_config as mqtt_cfg
 import sqlite3
 import logging
 import os, sys
