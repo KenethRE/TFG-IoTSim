@@ -83,7 +83,7 @@ def store_session():
         conn = simuliot.connect_db()
         if conn is not None:
             cur = conn.cursor()
-            
+
             ## Drop the table if it exists
             cur.execute("DROP TABLE IF EXISTS CURRENTDEVICESESSION")
             cur.execute("CREATE TABLE IF NOT EXISTS CURRENTDEVICESESSION (id TEXT PRIMARY KEY, name TEXT, type TEXT, location TEXT, value REAL)")
@@ -155,6 +155,22 @@ def start_session():
     threads = thread_pool.ThreadPool(devicesCurrentSession)
     threads.start()
     return "Session has been started", 200
+
+@app.route('/pause-session', methods=['GET'])
+def pause_session():
+    global threads
+    if threads is None:
+        return "No session to pause", 404
+    threads.pause()
+    return "Session has been paused", 200
+
+@app.route('/resume-session', methods=['GET'])
+def resume_session():
+    global threads
+    if threads is None:
+        return "No session to resume", 404
+    threads.resume()
+    return "Session has been resumed", 200
 
 @app.route('/kill-session',  methods=['GET'])
 def kill_session():

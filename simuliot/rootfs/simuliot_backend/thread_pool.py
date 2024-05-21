@@ -7,6 +7,7 @@ class ThreadPool:
         self.devices = devices
         self.threads = []
         self.stop_flag = threading.Event()
+        self.pause_flag = threading.Event()
 
     def start(self):
         for device in self.devices:
@@ -17,10 +18,45 @@ class ThreadPool:
     def _start(self, device):
         while not self.stop_flag.is_set():
             try:
-                device.publish()
-                sleep(5)
+                if self.pause_flag.is_set():
+                    continue
+                match (device.type):
+                    case 'Switch':
+                        device.switch()
+                        device.publish()
+                        sleep(5)
+                    case 'Hub':
+                        device.publish()
+                        sleep(5)
+                    case 'Thermometer':
+                        device.publish()
+                        sleep(5)
+                    case 'US_Sensor':
+                        device.publish()
+                        sleep(5)
+                    case 'Volume_Sensor':
+                        device.publish()
+                        sleep(5)
+                    case 'Thermo_Switch':
+                        device.publish()
+                        sleep(5)
+                    case 'Switch_Config':
+                        device.publish()
+                        sleep(5)
+                    case default:
+                        device.publish()
+                        sleep(5)
+                if device.type != 'Switch':
+                    device.publish()
+                    sleep(5)
             except queue.Empty:
                 continue
+
+    def pause(self):
+        self.pause_flag.set()
+
+    def resume(self):
+        self.pause_flag.clear()
 
     def stop(self):
         self.stop_flag.set()
