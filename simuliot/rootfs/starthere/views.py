@@ -62,7 +62,7 @@ def create_session(request):
 						if deviceinfo['id'] == device:
 							new_device = Devices.objects.create_session_device(deviceinfo['id'], deviceinfo['name'], deviceinfo['type'], location['location'])
 							session_devices.append(new_device.printDevice())
-			
+
 			req = urllib.request.Request('http://127.0.0.1:8088/devices', json.dumps(session_devices).encode(), {'Content-Type': 'application/json'}, method='POST')
 			response = urllib.request.urlopen(req)
 			if response.status == 400:

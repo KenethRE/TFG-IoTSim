@@ -13,5 +13,4 @@ mqtt_credentials = {
     "pwd": os.getenv("MQTT_PWD", "password")
 }
 
-
-TOPIC = "homeassistant/sensor/+"
+MQTT_STATUS_TOPIC = "homeassistant/status"

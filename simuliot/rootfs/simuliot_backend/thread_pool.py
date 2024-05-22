@@ -32,8 +32,9 @@ class ThreadPool:
                         device.publish()
                         sleep(5)
                     case 'US_Sensor':
+                        sleep_for = device.sleep()
                         device.publish()
-                        sleep(5)
+                        sleep(sleep_for)
                     case 'Volume_Sensor':
                         device.publish()
                         sleep(5)
