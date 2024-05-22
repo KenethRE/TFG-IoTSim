@@ -23,18 +23,19 @@ class presenceDevice:
 
     def setup(self):
         self.client.publish(self.topic + self.UUID + "/config",
-                            {
+                            json.dumps({
                             "name": self.deviceName,
                             "unique_id": self.UUID,
                             "object_id": self.deviceName.replace(" ", "_").lower(),
                             "state_topic": self.topic + self.UUID + "/state",
+                            "value_template":"{{ value_json.presence }}",
                             "device": {
                                 "identifiers": self.UUID,
                                 "name": self.deviceName,
                                 "model": self.type,
                                 "manufacturer": "SimulIOT"
                             }
-        })
+        }))
         self.isSetup = True
 
     def on_connect(self, client, userdata, flags, rc):
@@ -63,8 +64,7 @@ class presenceDevice:
 
     def reading(self):
         return json.dumps({
-            "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
-            "value": self.presence()
+            "presence": self.presence()
         })
     def publish(self):
         if not self.isSetup:
