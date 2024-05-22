@@ -1,6 +1,7 @@
 import threading
 import queue
 from time import sleep
+import simuliot
 
 class ThreadPool:
     def __init__(self, devices):
@@ -20,36 +21,36 @@ class ThreadPool:
             try:
                 if self.pause_flag.is_set():
                     continue
-                match (device.type):
-                    case 'Switch':
-                        device.switch()
-                        device.publish()
-                        sleep(5)
-                    case 'Hub':
-                        device.publish()
-                        sleep(5)
-                    case 'Thermometer':
-                        device.publish()
-                        sleep(5)
-                    case 'US_Sensor':
-                        sleep_for = device.sleep()
-                        device.publish()
-                        sleep(sleep_for)
-                    case 'Volume_Sensor':
-                        device.publish()
-                        sleep(5)
-                    case 'Thermo_Switch':
-                        device.publish()
-                        sleep(5)
-                    case 'Switch_Config':
-                        device.publish()
-                        sleep(5)
-                    case default:
-                        device.publish()
-                        sleep(5)
-                if device.type != 'Switch':
-                    device.publish()
-                    sleep(5)
+                device.publish()
+                sleep(5)
+                # Commented out block
+                # match (device.type):
+                #     case 'Switch':
+                #         sleep(5)
+                #     case 'Hub':
+                #         device.publish()
+                #         sleep(5)
+                #     case 'Thermometer':
+                #         device.publish()
+                #         sleep(5)
+                #     case 'US_Sensor':
+                #         sleep_for = device.sleep()
+                #         device.publish()
+                #         sleep(sleep_for)
+                #     case 'Volume_Sensor':
+                #         device.publish()
+                #         sleep(5)
+                #     case 'Thermo_Switch':
+                #         device.publish()
+                #         sleep(5)
+                #     case 'Switch_Config':
+                #         sleep(5)
+                #     case default:
+                #         device.publish()
+                #         sleep(5)
+                # if device.type != 'Switch':
+                #     device.publish()
+                #     sleep(5)
             except queue.Empty:
                 continue
 

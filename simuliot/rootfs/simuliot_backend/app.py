@@ -86,18 +86,17 @@ def store_session():
 
             ## Drop the table if it exists
             cur.execute("DROP TABLE IF EXISTS CURRENTDEVICESESSION")
-            cur.execute("CREATE TABLE IF NOT EXISTS CURRENTDEVICESESSION (id TEXT PRIMARY KEY, name TEXT, type TEXT, location TEXT, value REAL)")
+            cur.execute("CREATE TABLE IF NOT EXISTS CURRENTDEVICESESSION (id TEXT PRIMARY KEY, name TEXT, type TEXT, location TEXT)")
 
         ## Store the current session in the database. The current session is stored in the devicesCurrentSession list
             for device in devicesCurrentSession:
-                sqlstring = "INSERT INTO CURRENTDEVICESESSION (id, name, type, location, value) VALUES ('{}', '{}', '{}', '{}', {})".format(str(device.UUID), str(device.deviceName), str(device.type), str(device.location), float(device.reading()["value"]))
-                print (sqlstring)
+                sqlstring = "INSERT INTO CURRENTDEVICESESSION (id, name, type, location) VALUES ('{}', '{}', '{}', '{}')".format(str(device.UUID), str(device.deviceName), str(device.type), str(device.location))
                 cur.execute(sqlstring)
             conn.commit()
             cur.close()
             conn.close()
     except Exception as e:
-        simuliot.logger.critical('SQL Error: ' + str(e))
+        simuliot.logger.critical('SQL Error Store Session: ' + str(e) + ' ' + str(sqlstring))
         return "A database error has occured.", 500
 
     return "Session has been stored.", 201
@@ -113,7 +112,7 @@ def retrieve_session():
                 "name": device.deviceName,
                 "type": device.type,
                 "location": device.location,
-                "value": device.reading()["value"]
+                "value": device.reading() if hasattr(device, 'reading') else None
             }) ## Add device information to the list
         return jsonify(deviceSessionJSON), 200
     except Exception as e:

@@ -83,7 +83,7 @@ def display_session(request):
 		devices_back = json.loads(urllib.request.urlopen('http://127.0.0.1:8088/retrieve-session').read())
 
 		for device in devices_back:
-			new_device = Devices.objects.create_session_device_value(device['id'], device['name'], device['type'], device['location'], device['value'])
+			new_device = Devices.objects.create_session_device_value(device['id'], device['name'], device['type'], device['location'], 0)
 			devices.append(new_device)
 		return render(request, 'display_session.html', {'devices': devices})
 

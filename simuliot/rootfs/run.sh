@@ -15,7 +15,7 @@ export MQTT_BROKER_PORT
 
 echo "Starting Simulator..."
 echo "Starting Simulator Backend..."
-python3 ./simuliot_backend/app.py >> /simuliot_run.log &
+python3 ./simuliot_backend/app.py >> /simuliot.log &
 sleep 1
 echo "Starting Simulator Frontend..."
 gunicorn --bind 0.0.0.0:8087 simuliot_frontend.wsgi:application &

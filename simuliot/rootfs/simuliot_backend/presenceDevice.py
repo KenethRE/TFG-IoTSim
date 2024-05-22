@@ -1,6 +1,7 @@
 from random import randint
 import uuid
 import mqtt_config as mqtt_cfg
+import mqtt_client
 import simuliot
 import json
 
@@ -8,13 +9,13 @@ import json
 # For non contact sensors (ie. sensors that use infrared or metal devices) the temperature range is -20 to 60 degrees Celsius.
 
 class presenceDevice:
-    def __init__(self, deviceID, deviceName, location, type, client):
+    def __init__(self, deviceID, deviceName, location, type):
         self.deviceID = deviceID
         self.deviceName = deviceName
         self.UUID = str(uuid.uuid4())
         self.location = location
         self.type = type
-        self.client = client
+        self.client = mqtt_client.client(self.UUID)
         self.topic = "homeassistant/sensor/"
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
@@ -61,12 +62,16 @@ class presenceDevice:
         return round(randint(0, 100))
 
     def reading(self):
-        return {
+        return json.dumps({
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": self.presence()
-        }
+        })
     def publish(self):
-        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
+        if not self.isSetup:
+            self.setup()
+        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading())
 
     def _publish (self, topic, payload):
+        if not self.isSetup:
+            self.setup()
         self.client.publish(topic, payload)

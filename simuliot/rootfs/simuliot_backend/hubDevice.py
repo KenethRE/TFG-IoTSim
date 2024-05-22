@@ -17,13 +17,13 @@ class hubDevice:
             "state_topic": "homeassistant/sensor/" + self.UUID + "/state",
             "value": "0"
         }
-    
+
     def switch(self):
         self.switchState = not self.switchState
         return self.switchState
-    
+
     def publish(self):
-        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading()["value"])
+        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading())
 
     def _publish (self, topic, payload):
         self.client.publish(topic, payload)

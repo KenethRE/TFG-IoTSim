@@ -44,41 +44,41 @@ def connect_db():
             logger.info("Connected to SQLite DB")
         except sqlite3.Error as e:
             logger.critical('Failure to open DB. Please reinstall addon: ' + str(e))
-    else: 
+    else:
         logger.critical('Database file not found. Please reinstall addon.')
     return conn
 
 def getTempDevice(deviceID, deviceName, location, type, isContactProbe):
-    tempDevice = temp.tempDevice(deviceID, deviceName, location, type, mqtt_client.client(), isContactProbe)
+    tempDevice = temp.tempDevice(deviceID, deviceName, location, type, isContactProbe)
     return tempDevice
 
 def getSwitchConfigurableDevice(deviceID, deviceName, location, type, config):
     ## All configs will be empty for now
-    switchConfigurableDevice = switch_config.configurableSwitchDevice(deviceID, deviceName, location, type, mqtt_client.client(), config)
+    switchConfigurableDevice = switch_config.configurableSwitchDevice(deviceID, deviceName, location, type, config)
     return switchConfigurableDevice
 
 def getSwitchDevice(deviceID, deviceName, location, type):
-    switchDevice = switch.switchDevice(deviceID, deviceName, location, type, mqtt_client.client())
+    switchDevice = switch.switchDevice(deviceID, deviceName, location, type)
     return switchDevice
 
 def getFlowDevice(deviceID, deviceName, location, type, kind):
-    flowDevice = flow.flowDevice(deviceID, deviceName, location, type, mqtt_client.client(), kind)
+    flowDevice = flow.flowDevice(deviceID, deviceName, location, type, kind)
     return flowDevice
 
 def getTempSwitchDevice(deviceID, deviceName, location, type):
-    tempSwitchDevice = temp_switch.tempSwitchDevice(deviceID, deviceName, location, type, mqtt_client.client())
+    tempSwitchDevice = temp_switch.tempSwitchDevice(deviceID, deviceName, location, type)
     return tempSwitchDevice
 
 def getPresenceDevice(deviceID, deviceName, location, type):
-    presenceDevice = presence.presenceDevice(deviceID, deviceName, location, type, mqtt_client.client())
+    presenceDevice = presence.presenceDevice(deviceID, deviceName, location, type)
     return presenceDevice
 
 def getSoundSensorDevice(deviceID, deviceName, location, type):
-    soundSensorDevice = sound.soundSensorDevice(deviceID, deviceName, location, type, mqtt_client.client())
+    soundSensorDevice = sound.soundSensorDevice(deviceID, deviceName, location, type)
     return soundSensorDevice
 
 def getHubDevice(deviceID, deviceName, location, type):
-    hubDevice = hub.hubDevice(deviceID, deviceName, location, type, mqtt_client.client())
+    hubDevice = hub.hubDevice(deviceID, deviceName, location, type)
     return hubDevice
 
 def gen_devices(devicesJson):
