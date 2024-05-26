@@ -7,7 +7,6 @@ import flowDevice as flow
 import tempSwitchDevice as temp_switch
 import presenceDevice as presence
 import soundSensorDevice as sound
-import hubDevice as hub
 import sqlite3
 import logging
 import os, sys
@@ -77,10 +76,6 @@ def getSoundSensorDevice(deviceID, deviceName, location, type):
     soundSensorDevice = sound.soundSensorDevice(deviceID, deviceName, location, type)
     return soundSensorDevice
 
-def getHubDevice(deviceID, deviceName, location, type):
-    hubDevice = hub.hubDevice(deviceID, deviceName, location, type)
-    return hubDevice
-
 def gen_devices(devicesJson):
     devices = []
     for device in devicesJson:
@@ -107,8 +102,5 @@ def gen_devices(devicesJson):
             devices.append(new_device)
         elif device['Type'] == 'Volume_Sensor':
             new_device = getSoundSensorDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
-            devices.append(new_device)
-        elif device['Type'] == 'Hub':
-            new_device = getHubDevice(device['DeviceID'], device['Name'], device['Location'], device['Type'])
             devices.append(new_device)
     return devices

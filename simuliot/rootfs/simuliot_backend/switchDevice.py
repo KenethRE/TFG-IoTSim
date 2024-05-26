@@ -13,7 +13,7 @@ class switchDevice:
         self.deviceName = deviceName
         self.location = location
         self.UUID = str(uuid.uuid4())
-        self.switchState = 'OFF'
+        self.state = 'OFF'
         self.type = type
         self.client = mqtt_client.client(self.UUID)
         self.topic = "homeassistant/switch/"
@@ -54,10 +54,10 @@ class switchDevice:
             simuliot.logger.info("topic: {}, msg: {}".format(
                 message.topic, decoded))
             self.switch(decoded)
-            self._publish(self.topic + self.UUID + "/state", self.switchState)
+            self._publish(self.topic + self.UUID + "/state", self.state)
 
     def switch(self, switchState):
-        self.switchState = switchState
+        self.state = switchState
 
     def publish(self):
         if not self.isSetup:

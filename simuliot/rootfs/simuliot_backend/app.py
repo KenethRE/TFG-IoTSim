@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request
-from flask_socketio import SocketIO, emit
 import json, os
 import thread_pool
 
@@ -15,6 +14,8 @@ global devicesCurrentSession
 devicesCurrentSession = []
 global threads
 threads = None
+global deviceSessionJSON
+deviceSessionJSON = []
 
 
 device_thread_pid = None
@@ -49,7 +50,7 @@ def index():
     return "SimulIOT Backend"
 
 
-@app.route('/all-devices', methods=['GET'])
+@app.route('/api/devices', methods=['GET'])
 def get_all_devices():
     simuliot.logger.info('Request to get all devices')
     return jsonify(devices)
@@ -68,19 +69,46 @@ def get_device(device_id):
         simuliot.logger.error('Device not found. id: ' + str(device_id))
         return jsonify({"error": "Device not found"}), 404
 
-# POST /devices
-@app.route('/devices', methods=['POST'])
-def add_device():
+@app.route('/api/session', methods=['GET', 'DELETE', 'POST']) ## Get the current session from DB
+def get_session():
     global devicesCurrentSession
-    devicesJson = request.get_json()
-    ## check if devicesCurrentSession is empty. If it is, then add the devices to the list
-    if len(devicesCurrentSession) == 0:
-        devicesCurrentSession = simuliot.gen_devices(devicesJson)
-    else:
-        return jsonify({"error": "Session already started. Please clear the session before adding new devices"}), 400
-    return jsonify({"sucess":'Devices added to session. Awaiting save operation'}), 201
+    global deviceSessionJSON
+    if request.method == 'DELETE':
+        return clear_session()
+    if request.method == 'POST':
+        deviceSessionJSON = request.get_json()
+        ## check if devicesCurrentSession is empty. If it is, then add the devices to the list
+        if len(devicesCurrentSession) == 0:
+            devicesCurrentSession = simuliot.gen_devices(deviceSessionJSON)
+        else:
+            return jsonify({"error": "Session already started. Please clear the session before adding new devices"}), 400
+        return store_session()
+    try:
+        conn = simuliot.connect_db()
+        if conn is not None:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM CURRENTDEVICESESSION")
+            rows = cur.fetchall()
+            for row in rows:
+                deviceSessionJSON.append({
+                    "DeviceID": row[0],
+                    "Name": row[1],
+                    "Location": row[2],
+                    "Type": row[3]
+                })
+            cur.close()
+            conn.close()
+    except Exception as e:
+        simuliot.logger.critical('SQL Error: ' + str(e))
+        return "An error has occured retrieving the session", 500
+    return jsonify(deviceSessionJSON), 200
 
-@app.route('/store-session', methods=['GET'])
+def clear_session():
+    ## Drop the table if it exists
+    cur.execute("DROP TABLE IF EXISTS CURRENTDEVICESESSION")
+    devicesCurrentSession.clear()
+    return "Current session has been cleared.", 200
+
 def store_session():
     global devicesCurrentSession
     ## Check if the table DevicesSession exists. If not, create it
@@ -88,9 +116,6 @@ def store_session():
         conn = simuliot.connect_db()
         if conn is not None:
             cur = conn.cursor()
-
-            ## Drop the table if it exists
-            cur.execute("DROP TABLE IF EXISTS CURRENTDEVICESESSION")
             cur.execute("CREATE TABLE IF NOT EXISTS CURRENTDEVICESESSION (id TEXT PRIMARY KEY, name TEXT, type TEXT, location TEXT)")
 
         ## Store the current session in the database. The current session is stored in the devicesCurrentSession list
@@ -103,54 +128,16 @@ def store_session():
     except Exception as e:
         simuliot.logger.critical('SQL Error Store Session: ' + str(e) + ' ' + str(sqlstring))
         return "A database error has occured.", 500
-
     return "Session has been stored.", 201
 
-@app.route('/retrieve-session', methods=['GET'])
-def retrieve_session():
+@app.route('/api/resume-session', methods=['GET'])
+def resume_session():
     global devicesCurrentSession
-    deviceSessionJSON = []
-    try:
-        for device in devicesCurrentSession:
-            deviceSessionJSON.append({
-                "id": device.UUID,
-                "name": device.deviceName,
-                "type": device.type,
-                "location": device.location,
-                "value": device.reading() if hasattr(device, 'reading') else None
-            }) ## Add device information to the list
-        return jsonify(deviceSessionJSON), 200
-    except Exception as e:
-        simuliot.logger.critical('Session Retrieval Error: ' + str(e))
-        return "An error has ocurred obtaining current session", 500
+    devicesCurrentSession = []
+    global deviceSessionJSON
+    devicesCurrentSession = simuliot.gen_devices(deviceSessionJSON)
+    return "Session has been resumed", 200
 
-@app.route('/api/session', methods=['GET']) ## Get the current session from DB
-def get_session():
-    deviceSessionJSON = []
-    try:
-        conn = simuliot.connect_db()
-        if conn is not None:
-            cur = conn.cursor()
-            cur.execute("SELECT * FROM CURRENTDEVICESESSION")
-            rows = cur.fetchall()
-            for row in rows:
-                deviceSessionJSON.append({
-                    "id": row[0],
-                    "name": row[1],
-                    "type": row[2],
-                    "location": row[3]
-                })
-            cur.close()
-            conn.close()
-    except Exception as e:
-        simuliot.logger.critical('SQL Error: ' + str(e))
-        return "An error has occured retrieving the session", 500
-    return jsonify(deviceSessionJSON), 200
-
-@app.route('/clear-session', methods=['DELETE'])
-def clear_session():
-    devicesCurrentSession.clear()
-    return "Current session has been cleared.", 200
 
 # PUT /devices/<id>
 @app.route('/devices/<int:device_id>', methods=['PUT'])
@@ -191,8 +178,8 @@ def pause_session():
     threads.pause()
     return "Session has been paused", 200
 
-@app.route('/resume-session', methods=['GET'])
-def resume_session():
+@app.route('/api/playback-session', methods=['GET'])
+def play_session():
     global threads
     if threads is None:
         return "No session to resume", 404
@@ -207,8 +194,7 @@ def kill_session():
     simuliot.logger.info('Killing session with {} devices'.format(len(threads.threads)))
     if device_thread_pid != 0:
         threads.stop()
-        devicesCurrentSession.clear()
-        return "Session has been killed", 200
+        return clear_session()
 
 @app.route('/session-status', methods=['GET'])
 def session_status():
@@ -217,13 +203,21 @@ def session_status():
         return "No session running", 404
     return threads.status()
 
-@app.route('/update_device_value', methods=['POST'])
+@app.route('/api/device-state', methods=['GET'])
+def get_device_state():
+    device = next((device for device in devicesCurrentSession if device.UUID == request.args.get('deviceID')), None)
+    if device:
+        return jsonify(device.state)
+    else:
+        return "Device not found", 404
+
+@app.route('/api/update_device_value', methods=['POST'])
 def publish_device():
     device = next((device for device in devicesCurrentSession if device.UUID == request.get_json()['deviceID']), None)
     print (device)
     if device:
-        device._publish(device.reading()['state_topic'], request.get_json()['value'])
-        return "Device published", 200
+        device._publish(device.topic + device.UUID + "/state", request.get_json()['value'])
+        return "Device value published", 200
     else:
         return "Device not found", 404
 

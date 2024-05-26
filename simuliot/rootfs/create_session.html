@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+	.grid-container {
+		display: grid;
+		grid-template-columns: auto auto;
+		padding: 10px;
+	}
+	.grid-item {
+		padding: 20px;
+		text-align: center;
+	}
+	.sidebar {
+		height: 100%;
+		width: 200px;
+		position: fixed;
+		z-index: 1;
+		top: 0;
+		left: 0;
+		background-color: #151c41;
+		overflow-x: hidden;
+		padding-top: 20px;
+	}
+	.sidebar a {
+		padding: 6px 8px 6px 16px;
+		text-decoration: none;
+		font-size: 25px;
+		color: #ffffff;
+	}
+	.sidebar a:hover {
+		color: #474747;
+	}
+	.main {
+		margin-left: 160px;
+		padding: 0px 50px;
+	}
+	@media screen and (max-height: 450px) {
+		.sidebar {padding-top: 15px;}
+		.sidebar a {font-size: 18px;}
+	}
+	@media screen and (max-width: 700px) {
+		.sidebar {
+			width: 100%;
+			height: fit-content;
+			position: relative;
+		}
+		.sidebar a {float: left;}
+		.main {margin-left: 0;}
+	}
+	@media screen and (max-width: 400px) {
+		.sidebar a {
+			text-align: center;
+			float: none;
+		}
+	}
+	a {
+		text-decoration: none;
+		font-size: 10px;
+	}
+	.stretch-card>.card {
+    width: 100%;
+    min-width: 100%
+	}
+
+	body {
+		background-color: #f9f9fa
+	}
+
+	.flex {
+		-webkit-box-flex: 1;
+		-ms-flex: 1 1 auto;
+		flex: 1 1 auto
+	}
+	.padding {
+		padding: 3rem !important
+	}
+
+	.card {
+		border-radius: 5px;
+		-webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+		box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+		border: none;
+		margin-bottom: 10px;
+	}
+
+	.card .card-header {
+		background-color: transparent;
+		border-bottom: none;
+		padding: 5px 10px;
+	}
+
+	.card .card-header+.card-block, .card .card-header+.card-block-big {
+		padding-top: 0;
+	}
+
+	.card-block {
+		padding: 1.25rem;
+		background-color: #fff;
+	}
+
+	.m-b-20 {
+		margin-bottom: 10px;
+	}
+
+	.card-sub {
+		cursor: move;
+		border: none;
+		-webkit-box-shadow: 0 0 1px 2px rgba(0,0,0,0.05), 0 -2px 1px -2px rgba(0,0,0,0.04), 0 0 0 -1px rgba(0,0,0,0.05);
+		box-shadow: 0 0 1px 2px rgba(0,0,0,0.05), 0 -2px 1px -2px rgba(0,0,0,0.04), 0 0 0 -1px rgba(0,0,0,0.05);
+	}
+
+	.card-block {
+		padding: 5px;
+		background-color: #ffffff;
+	}
+    .card-title {
+        font-size: 10px;
+        padding: 5px;
+    }
+</style>
+<script src="static/js/create_session.js" type="text/javascript"></script>
+<head>
+	<meta charset="UTF-8">
+	<title>Create a device session</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1", shrink-to-fit="no">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+<body onload="getDevices()">
+	<div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-header-text" style="font-weight: bolder;">Devices</h4>
+            </div>
+            <div class="card-block" id="sensors">
+                <h4 style="font-weight: bolder;">Sensors</h4>
+            </div>
+            <div class="card-block" id="switches">
+                <h4 style="font-weight: bolder;">Switches</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <h2 class="text-center">Create a device session</h2>
+        <input id="room_name" type="text" class="form-control" placeholder="Room Name" style="margin-bottom: 10px;">
+        <button onclick="addCardBlock()" class="btn btn-primary">Add Room</button>
+        <button onclick="deleteCardBlock()" class="btn btn-primary">Delete Last Added Room</button>
+        <h3 class="text-center" style="font-weight: bolder;">Session</h4>
+        <div class="card" id="rooms"></div>
+    </div>
+    <button onclick="saveData()" class="btn btn-primary" style="margin-top: 20px;">Save</button>
+</body>
+</html>

@@ -114,65 +114,7 @@
 		background-color: #fff;
 	}
 </style>
-<script>
-	function terminateSession() {
-		if (confirm("Are you sure you want to terminate the session? You will be redirected to the main menu.")) {
-			fetch('/terminate_session', {
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-CSRFToken': '{{ csrf_token }}'
-				}
-			}).then(response => {
-				if (response.redirected) {
-            	window.location.replace(response.url);
-        		} else {
-					alert("No session found to terminate.");
-				}
-			});
-		}
-	}
-	function startSession() {
-		if (confirm("All devices will start publishing. Are you sure you want to continue?")) {
-			fetch('/start_session', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-CSRFToken': '{{ csrf_token }}'
-				}
-			}).then(response => {
-				if (response.ok) {
-					window.location.href = "{% url 'display_session' %}";
-				} else {
-					alert("Error starting session.");
-				}
-			});
-		}
-	}
-	function UpdateDeviceValue(id) {
-		id_val = id + "_val";
-		var value = document.getElementById(id_val).value;
-		var deviceID = id;
-		console.log(value + " " + deviceID);
-		fetch('/update_device_value', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRFToken': '{{ csrf_token }}'
-			},
-			body: JSON.stringify({
-				'value': value,
-				'deviceID': deviceID
-			})
-		}).then(response => {
-			if (response.ok) {
-				alert("Device value updated.");
-			} else {
-				alert("Error updating device value.");
-			}
-		});
-	}
-</script>
+<script src="static/js/display_session.js" type="text/javascript"></script>
 <head>
 	<meta charset="UTF-8">
 	<title>Current Session</title>
@@ -193,26 +135,11 @@
 						<div class="card-header">
 							<h4 class="card-header-text" style="font-weight: bolder;">Current Session</h4>
 						</div>
-						<div class="card-block">
-							<div class="row" id="sortable">
-								{% for device in devices %}
-								<div class="col-md-6 m-b-20" draggable="false" id="{{ device.DeviceID }}">
-									<div class="card-sub">
-										<div class="card-block">
-											<span class="material-symbols-outlined" style="font-size: 20px;">{{ device.Type }}</span>
-											<h4 class="card-title text-wrap" style="font-weight: bolder; font-size: 15px; padding: 5px;">{{ device.Name }}</h4>
-											<h4 class="card-text text-wrap" style="font-weight: bold; font-size: 15px; padding: 5px;">{{ device.Location }}</h4>
-											<input id="{{ device.DeviceID }}_val" type="number" class="form-control" id="value" placeholder="{{ device.Value }}" style="margin-top: 10px;">
-											<button id="{{ device.DeviceID }}" onclick="UpdateDeviceValue(this.id)" class="btn btn-primary" style="margin-top: 10px; max-width: 50%;">Update</button>
-										</div>
-									</div>
-								</div>
-								{% endfor %}
-							</div>
+						<div class="card-block" id="session">
 						</div>
 					</div>
 				</div>
-				<a href="{% url 'start' %}" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Return to Menu</a>
+				<a href="/" class="btn btn-primary" role="button" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Return to Menu</a>
 				<button onclick="terminateSession()" class="btn btn-primary" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Terminate Session</button>
 				<button onclick="startSession()" class="btn btn-primary" style="margin-left: 10px; margin-top: 10px; max-width: 50%;">Start Session</button>
 			</div>

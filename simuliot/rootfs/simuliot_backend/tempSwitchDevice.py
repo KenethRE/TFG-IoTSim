@@ -68,7 +68,8 @@ class tempSwitchDevice:
     def publish(self):
         if not self.isSetup:
             self.setup()
-        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.reading())
+        self.state = self.reading()
+        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.state)
 
     def _publish (self, topic, payload):
         if not self.isSetup:

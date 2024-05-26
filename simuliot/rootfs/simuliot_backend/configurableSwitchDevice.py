@@ -14,7 +14,7 @@ class configurableSwitchDevice:
         self.deviceName = deviceName
         self.location = location
         self.UUID = str(uuid.uuid4())
-        self.switchState = 'OFF'
+        self.state = 'OFF'
         self.config = config
         self.type = type
         self.client = mqtt_client.client(self.UUID)
@@ -56,10 +56,10 @@ class configurableSwitchDevice:
             simuliot.logger.info("topic: {}, msg: {}".format(
                 message.topic, decoded))
             self.switch(decoded)
-            self._publish(self.topic + self.UUID + "/state", self.switchState)
+            self._publish(self.topic + self.UUID + "/state", self.state)
 
     def switch(self, switchState):
-        self.switchState = switchState
+        self.state = switchState
 
     def switch(self):
         self.switchState = not self.switchState
@@ -68,7 +68,7 @@ class configurableSwitchDevice:
     def publish(self):
         if not self.isSetup:
             self.setup()
-        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.switchState)
+        self.client.publish("homeassistant/sensor/" + self.UUID + "/state", self.state)
 
     def _publish (self, topic, payload):
         if not self.isSetup:
