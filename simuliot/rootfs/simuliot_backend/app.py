@@ -44,6 +44,11 @@ except Exception as e:
     simuliot.logger.critical('SQL Error: ' + str(e))
 
 
+@app.route('/', methods=['GET'])
+def index():
+    return "SimulIOT Backend"
+
+
 @app.route('/all-devices', methods=['GET'])
 def get_all_devices():
     simuliot.logger.info('Request to get all devices')
@@ -118,6 +123,29 @@ def retrieve_session():
     except Exception as e:
         simuliot.logger.critical('Session Retrieval Error: ' + str(e))
         return "An error has ocurred obtaining current session", 500
+
+@app.route('/api/session', methods=['GET']) ## Get the current session from DB
+def get_session():
+    deviceSessionJSON = []
+    try:
+        conn = simuliot.connect_db()
+        if conn is not None:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM CURRENTDEVICESESSION")
+            rows = cur.fetchall()
+            for row in rows:
+                deviceSessionJSON.append({
+                    "id": row[0],
+                    "name": row[1],
+                    "type": row[2],
+                    "location": row[3]
+                })
+            cur.close()
+            conn.close()
+    except Exception as e:
+        simuliot.logger.critical('SQL Error: ' + str(e))
+        return "An error has occured retrieving the session", 500
+    return jsonify(deviceSessionJSON), 200
 
 @app.route('/clear-session', methods=['DELETE'])
 def clear_session():

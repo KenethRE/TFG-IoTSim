@@ -18,6 +18,6 @@ echo "Starting Simulator Backend..."
 python3 ./simuliot_backend/app.py >> /simuliot.log &
 sleep 1
 echo "Starting Simulator Frontend..."
-gunicorn --bind 0.0.0.0:8087 simuliot_frontend.wsgi:application &
+#gunicorn --bind 0.0.0.0:8087 simuliot_frontend.wsgi:application &
 
 nginx -g "daemon off;error_log /simuliot_nginx_error.log debug;"
