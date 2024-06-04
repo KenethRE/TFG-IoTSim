@@ -33,6 +33,7 @@ function loadDeviceSession() {
         if (response.ok) {
             response.json().then(data => {
                 for (var i = 0; i < data.length; i++){
+                    console.log(data[i]);
                     addDevice(data[i]);
                 }
             });
@@ -50,11 +51,11 @@ function addDevice(device) {
 
     var deviceTitle = document.createElement("h5");
     deviceTitle.className = "card-header-text";
-    deviceTitle.textContent = device.name;
+    deviceTitle.textContent = device.Name;
 
     var deviceLocation = document.createElement("p");
     deviceLocation.className = "card-header-text";
-    deviceLocation.textContent = "Location: " + device.location;
+    deviceLocation.textContent = "Location: " + device.Location;
 
     var deviceValue = document.createElement("input");
     deviceValue.className = "card-header-text";
@@ -67,11 +68,11 @@ function addDevice(device) {
     var deviceUpdate = document.createElement("button");
     deviceUpdate.className = "btn btn-primary";
     deviceUpdate.textContent = "Update";
-    deviceUpdate.onclick = function () { UpdateDeviceValue(device.id); };
+    deviceUpdate.onclick = function () { UpdateDeviceValue(device.DeviceID); };
 
     var deviceBody = document.createElement("div");
     deviceBody.className = "material-symbols-outlined";
-    deviceBody.textContent = convertTypeToIcon(device.type);
+    deviceBody.textContent = convertTypeToIcon(device.Type);
 
     deviceHeader.appendChild(deviceTitle);
     deviceHeader.appendChild(deviceLocation);
@@ -80,29 +81,17 @@ function addDevice(device) {
     newDevice.appendChild(deviceHeader);
     newDevice.appendChild(deviceBody);
 
-    // divide devices into sensors and switches
-    if (device.type == "Switch" || device.type == "Thermo_Switch") {
-        document.getElementById("switches").appendChild(newDevice);
-        return;
-    } else if (device.type == "Thermometer" || device.type == "Water_Flow" || device.type == "Air_Flow" || device.type == "US_Sensor" || device.type == "Volume_Sensor") {
-        document.getElementById("sensors").appendChild(newDevice);
-        return;
-    }
+    //add them to the session div
+    document.getElementById("session").appendChild(newDevice);
 }
 
 function terminateSession() {
     if (confirm("Are you sure you want to terminate the session? You will be redirected to the main menu.")) {
-        fetch('/terminate_session', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        }).then(response => {
-            if (response.redirected) {
-            window.location.replace(response.url);
-            } else {
-                alert("No session found to terminate.");
+        $.ajax({
+            type: "GET",
+            url: "/api/kill-session",
+            success: function(response) {
+                window.location.reload();
             }
         });
     }
@@ -157,16 +146,6 @@ function UpdateDeviceValue(deviceID) {
             'deviceID': deviceID,
             'value': value
         },
-        success: function(response) {
-            location.reload();
-        }
-    });
-}
-
-function terminateSession() {
-    $.ajax({
-        type: "POST",
-        url: "/api/terminate_session",
         success: function(response) {
             location.reload();
         }

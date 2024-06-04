@@ -83,7 +83,61 @@ function getDevices() {
             });
         }
     });
+    // we need to fetch the current areas defined within HA
+    fetch("/api/rooms", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(response => {
+        if (response.ok) {
+            response.json().then(data => {
+                for (var i = 0; i < data.length; i++){
+                    // check for underscores
+                    if (data[i].includes("_")) {
+                        room_name = data[i].split("_").join(" ");
+
+                    } else {
+                        room_name = data[i];
+                    }
+                    room_name = room_name.charAt(0).toUpperCase() + room_name.slice(1);
+                    addRoom(room_name);
+                }
+            });
+        }
+    });
 }
+
+function addRoom(room) {
+    var newCardBlock = document.createElement("div");
+            newCardBlock.className = "col-md-6";
+
+            var card = document.createElement("div");
+            card.className = "card";
+
+            var cardHeader = document.createElement("div");
+            cardHeader.className = "card-header";
+
+            var cardTitle = document.createElement("h4");
+            cardTitle.className = "card-header-text";
+            cardTitle.style.fontWeight = "bolder";
+            cardTitle.textContent = room;
+
+            var cardBlock = document.createElement("div");
+            cardBlock.className = "card-block";
+            cardBlock.ondragover = allowDrop;
+            cardBlock.ondrop = dropClone;
+            cardBlock.style.height = "200px";
+            cardBlock.style.overflow = "auto";
+            cardBlock.style.border = "1px solid #000";
+
+            cardHeader.appendChild(cardTitle);
+            newCardBlock.appendChild(cardHeader);
+            newCardBlock.appendChild(cardBlock);
+
+    document.getElementById("rooms").appendChild(newCardBlock);
+}
+
 
 function addDevice(device) {
     var newDevice = document.createElement("div");
@@ -163,6 +217,7 @@ function saveData() {
             });
         }
     }
+    console.log(data)
     fetch("/api/session", {
         method: "POST",
         body: JSON.stringify(data),
