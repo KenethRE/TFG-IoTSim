@@ -11,12 +11,12 @@ function getStarted() {
             }).then(response => {
                 if (response.ok) {
                     console.log("Previous session deleted");
+                    window.location.href = "/create_session";
                 }
             });
         }
     } else {
         window.location.href = "/create_session";
-        console.log("No previous session");
     }
 }
 function checkPreviousSession() {
@@ -30,13 +30,19 @@ function checkPreviousSession() {
         if (response.ok) {
             response.json().then(data => {
                 previousSession = data;
+                if (data.length > 0) {
+                    document.getElementById("continueBtn").style.display = "block";
+                    document.getElementById("continueBtn").style.visibility = "visible";
+                }
                 console.log(previousSession);
             });
         }
     });
 
+}
+
+function previousSessionPage() {
     if (previousSession.length > 0) {
-        document.getElementById("continueBtn").style.display = "block";
-        document.getElementById("continueBtn").style.visibility = "visible";
+        window.location.href = "/session";
     }
 }
